@@ -5,6 +5,7 @@ This code is used to read in data from D0/D0bar decays to two hadrons in LHCb in
 The year of interest and size of the data to be analysed must be specified using the required flags --year --size. There is a third flag --path, which is not required. This one is used to specify the directory where the output files should be written. By default it is set to save the files in the current working directory.
 This code is heavily inspired on the work of Camille Jarvis-Stiggants, Michael England and Marc Oriol Pérez . Here the original code has been reorganized, some comments have been added, as well as minor features to add flexibility to the code.
 
+Input for Size is allowed in steps of 10 so that I can loop it for TChain in fit global later
 Author: Laxman Seelan (laxman.seelan@student.manchester.ac.uk) and Sam Taylor
 Last edited: 15th September 2023
 """
@@ -27,9 +28,6 @@ def size_argument(value):
             return int_value
         else:
             raise argparse.ArgumentTypeError("Integer value must be between 1 and 800 and be divisible by 10.")
-    elif value.lower() in ["small", "medium", "large"]:
-        # If the input is one of the predefined strings, return it
-        return value.lower()
     else:
         raise argparse.ArgumentTypeError("Invalid value. Choose between 'small', 'medium', 'large', or an integer between 1 and 800 that is divisible by 10.")
 
@@ -40,8 +38,8 @@ def parse_arguments():
     --year  Used to specify the year at which the data was taken the user is interested in.
             The argument must be one of: [16, 17, 18]. These refer to 2016, 2017 & 2018, respectively.
     --size  Used to specify the amount of events the user is interested in analysing.
-            The argument must be one of: [large, small, medium, 1-800]. The integers specify the number of root
-            files to be read in. Large is equivalent to 8. Medium is equivalent to 4. Small takes 2000000 events.
+            The argument must be one of: [1-800]. The interger must be divisible by 10. The integers specify the number of root
+            files to be read in.
     --path  Used to specify the directory in which the output files should be written. It is not required,
             in the case it is not specified, the default path is the current working directory.
     
@@ -99,14 +97,8 @@ def get_data():
     
     # set the number of files to concatenate depending on the size requested
     max_events = None
-    if options.size=="small":
-        data_to_concatenate = np.arange(1, 2, 1)
-        max_events = 200000
-    elif options.size=="medium":
-        data_to_concatenate = np.arange(1, 4, 1)
-    elif options.size=="large":
-        data_to_concatenate = np.arange(1, 11, 1)
-    elif 0<int(options.size)<800:
+    
+    if 0<int(options.size)<800:
         data_to_concatenate = np.arange(int(options.size)-9, int(options.size)+1, 1)
 
     

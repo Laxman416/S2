@@ -16,12 +16,22 @@ def dir_path(string):
     else:
         raise NotADirectoryError(string)
         
+def size_argument(value):
+    if value.isdigit():
+        # If the input is a digit, treat it as an integer
+        int_value = int(value)
+        if 1 <= int_value <= 800 and int_value % 10 == 0: 
+            return int_value
+        else:
+            raise argparse.ArgumentTypeError("Integer value must be between 1 and 800 and be divisible by 10.")
+    else:
+        raise argparse.ArgumentTypeError("Invalid value. Choose between 'small', 'medium', 'large', or an integer between 1 and 800 that is divisible by 10.")
+
 def parse_arguments():
     '''
     Parses the arguments needed along the code. Arguments:
     
-    --year      Used to specify the year at which the data was taken the user is interested in.
-                The argument must be one of: [16, 17, 18]. These referr to 2016, 2017 & 2018, respectively.
+
     --size      Used to specify the amount of events the user is interested in analysing.
                 The argument must be one of: [large, small, medium, 1-8]. The integers specify the number of root
                 files to be read in. Large is equivalent to 8. Medium is equivalent to 4. Small takes 200000 events.
@@ -36,16 +46,8 @@ def parse_arguments():
     '''
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--year",
-        type=int,
-        choices=[16,17,18,19],
-        required=True,
-        help="flag to set the data taking year."
-    )
-    parser.add_argument(
         "--size",
-        type=str,
-        choices=["large", "medium", "small", "1", "2", "3", "4", "5", "6", "7", "8"],
+        type=size_argument,
         required=True,
         help="flag to set the data taking year."
     )   
@@ -84,6 +86,17 @@ def parse_arguments():
         help="flag to set whether a binned or an unbinned should be performed (y/n)"
     )
     return parser.parse_args()
+
+def generate_list(size_value_local):
+    result_list = []
+    current_value = 10
+
+    while not result_list or result_list[-1] < size_value_local:
+        result_list.append(current_value)
+        current_value += 10
+
+    return result_list
+
 args = parse_arguments()
 # Bin Parameters
 numbins = 240
@@ -96,69 +109,72 @@ else:
     binned = False
 
 ROOT.RooMsgService.instance().setGlobalKillBelow(ROOT.RooFit.ERROR) # mute RooFit warnings
+size_list = []
+ttree_D0 = TChain("D02Kpi_Tuple/DecayTree")
+ttree_D0bar = TChain("D02Kpi_Tuple/DecayTree")
 
-if args.year == 19:
-    if args.scheme == "total":
-        # Selects invariant mass (D0_MM) of DO
-        ttree_D0 = TChain("D02Kpi_Tuple/DecayTree")
-        ttree_D0.Add(f"{args.input}/D0_up_data_16_{args.size}_clean.root")
-        ttree_D0.Add(f"{args.input}/D0_up_data_17_{args.size}_clean.root")
-        ttree_D0.Add(f"{args.input}/D0_up_data_18_{args.size}_clean.root")
-        ttree_D0.Add(f"{args.input}/D0_down_data_16_{args.size}_clean.root")
-        ttree_D0.Add(f"{args.input}/D0_down_data_17_{args.size}_clean.root")
-        ttree_D0.Add(f"{args.input}/D0_down_data_18_{args.size}_clean.root")
-        ttree_D0.SetBranchStatus("*", 0)
-        ttree_D0.SetBranchStatus("D0_MM", 1)
+size_value = args.size
+if isinstance(size_value, int):
+    size_value = int(size_value)
+    size_list = generate_list(size_value)
+    for valuesize in size_list:
+        if args.scheme == "total":
+            ttree_D0.Add(f"{args.input}/D0_up_data_16_{valuesize}_clean.root")
+            ttree_D0.Add(f"{args.input}/D0_up_data_17_{valuesize}_clean.root")
+            ttree_D0.Add(f"{args.input}/D0_up_data_18_{valuesize}_clean.root")
+            ttree_D0.Add(f"{args.input}/D0_down_data_16_{valuesize}_clean.root")
+            ttree_D0.Add(f"{args.input}/D0_down_data_17_{valuesize}_clean.root")
+            ttree_D0.Add(f"{args.input}/D0_down_data_18_{valuesize}_clean.root")
+            ttree_D0.SetBranchStatus("*", 0)
+            ttree_D0.SetBranchStatus("D0_MM", 1)
 
+            ttree_D0bar.Add(f"{args.input}/D0bar_up_data_16_{valuesize}_clean.root")
+            ttree_D0bar.Add(f"{args.input}/D0bar_up_data_17_{valuesize}_clean.root")
+            ttree_D0bar.Add(f"{args.input}/D0bar_up_data_18_{valuesize}_clean.root")
+            ttree_D0bar.Add(f"{args.input}/D0bar_down_data_16_{valuesize}_clean.root")
+            ttree_D0bar.Add(f"{args.input}/D0bar_down_data_17_{valuesize}_clean.root")
+            ttree_D0bar.Add(f"{args.input}/D0bar_down_data_18_{valuesize}_clean.root")
+            ttree_D0bar.SetBranchStatus("*", 0)
+            ttree_D0bar.SetBranchStatus("D0_MM", 1)
+        else:
+            #######################
+            # Come back to this later
+            # Selects invariant mass (D0_MM) of DO for MagUp
+            #Total years Bins
+            ttree_D0.Add(f"{args.input}/D0_{args.year}_{args.size}_bin{args.bin}.root")
+            ttree_D0.SetBranchStatus("*", 0)
+            ttree_D0.SetBranchStatus("D0_MM", 1)
 
-        # Selects invariant mass (D0_MM) of DObar
-        ttree_D0bar = TChain("D02Kpi_Tuple/DecayTree")
-        ttree_D0bar.Add(f"{args.input}/D0bar_up_data_16_{args.size}_clean.root")
-        ttree_D0bar.Add(f"{args.input}/D0bar_up_data_17_{args.size}_clean.root")
-        ttree_D0bar.Add(f"{args.input}/D0bar_up_data_18_{args.size}_clean.root")
-        ttree_D0bar.Add(f"{args.input}/D0bar_down_data_16_{args.size}_clean.root")
-        ttree_D0bar.Add(f"{args.input}/D0bar_down_data_17_{args.size}_clean.root")
-        ttree_D0bar.Add(f"{args.input}/D0bar_down_data_18_{args.size}_clean.root")
-        ttree_D0bar.SetBranchStatus("*", 0)
-        ttree_D0bar.SetBranchStatus("D0_MM", 1)
-    else:
-        # Selects invariant mass (D0_MM) of DO for MagUp
-        #Total years Bins
-        ttree_D0 = TChain("D02Kpi_Tuple/DecayTree")
-        ttree_D0.Add(f"{args.input}/D0_{args.year}_{args.size}_bin{args.bin}.root")
-        ttree_D0.SetBranchStatus("*", 0)
-        ttree_D0.SetBranchStatus("D0_MM", 1)
+            # Selects invariant mass (D0_MM) of DObar for MagDown
+            ttree_D0bar.Add(f"{args.input}/D0bar_{args.year}_{args.size}_bin{args.bin}.root")
+            ttree_D0bar.SetBranchStatus("*", 0)
+            ttree_D0bar.SetBranchStatus("D0_MM", 1)
+    
 
-        # Selects invariant mass (D0_MM) of DObar for MagDown
-        ttree_D0bar_up = TChain("D02Kpi_Tuple/DecayTree")
-        ttree_D0bar_up.Add(f"{args.input}/D0bar_{args.year}_{args.size}_bin{args.bin}.root")
-        ttree_D0bar_up.SetBranchStatus("*", 0)
-        ttree_D0bar_up.SetBranchStatus("D0_MM", 1)
-
-D0_M = ROOT.RooRealVar("D0_MM", "D0 mass / [MeV/c*c]", 1815, 1910)
+D0_MM = ROOT.RooRealVar("D0_MM", "D0 mass / [MeV/c*c]", 1815, 1910)
 
 # Johnson SU Distribution
 Jmu = RooRealVar("Jmu", "Jmu", 1865, 1860, 1870)
 Jlam = RooRealVar("Jlam", "Jlam", 16.3, 10, 20)
 Jgam = RooRealVar("Jgam", "Jgam", 0.3, 0, 10)
 Jdel = RooRealVar("Jdel", "Jdel", 1.6, 0, 10)
-Johnson = RooJohnson("Johnson","Johnson", D0_M, Jmu, Jlam, Jgam, Jdel)
+Johnson = RooJohnson("Johnson","Johnson", D0_MM, Jmu, Jlam, Jgam, Jdel)
 
 # Bifurcated Gaussian
 bifurmean = RooRealVar("bifurmean", "bifurmean", 1865.2, 1860, 1870)
 sigmaL =  RooRealVar("sigmaL", "sigmaL", 8.24, 0, 10)
 sigmaR = RooRealVar("sigmaR", "sigmaR", 6.1, 0, 10)
-bifurgauss = RooBifurGauss("Bifurgauss", "Bifurgauss", D0_M, bifurmean, sigmaL, sigmaR)
+bifurgauss = RooBifurGauss("Bifurgauss", "Bifurgauss", D0_MM, bifurmean, sigmaL, sigmaR)
 
 # Bifurcated Gaussian 
 bifurmean2 = RooRealVar("bifurmean2", "bifurmean2", 1865.5, 1860, 1870)
 sigmaL2 =  RooRealVar("sigmaL2", "sigmaL2", 6, 0, 10)
 sigmaR2 = RooRealVar("sigmaR2", "sigmaR2", 8.49, 0, 10)
-bifurgauss2 = RooBifurGauss("Bifurgaussian2", "Bifurgaussian2", D0_M, bifurmean2, sigmaL2, sigmaR2)
+bifurgauss2 = RooBifurGauss("Bifurgaussian2", "Bifurgaussian2", D0_MM, bifurmean2, sigmaL2, sigmaR2)
 
 # Model Exponential Background
 a0 = RooRealVar("a0", "a0", -0.009, -1, 0)
-background = RooExponential("exponential", "exponential", D0_M, a0)
+background = RooExponential("exponential", "exponential", D0_MM, a0)
 
 # Ratio of signal intensities between each model. For N PDFs need N-1 fractions 
 # DO 
@@ -184,8 +200,8 @@ if binned:
     D0bar_Hist = ROOT.gPad.GetPrimitive("D0bar_Hist")
 
 
-    Binned_D0 = RooDataHist("Binned_D0", ROOT.RooStringView("Binned D0 Data"), RooArgList(D0_M), D0_Hist)
-    Binned_D0bar = RooDataHist("Binned_D0bar", ROOT.RooStringView("Binned D0bar Data"), RooArgList(D0_M), D0bar_Hist)
+    Binned_D0 = RooDataHist("Binned_D0", ROOT.RooStringView("Binned D0 Data"), RooArgList(D0_MM), D0_Hist)
+    Binned_D0bar = RooDataHist("Binned_D0bar", ROOT.RooStringView("Binned D0bar Data"), RooArgList(D0_MM), D0bar_Hist)
 
     # Creating the binned sample and simultaneous PDF
     binned_sample = ROOT.RooCategory("binned_sample", "binned_sample")
@@ -207,7 +223,7 @@ if binned:
 
     # Recombine the data into a simultaneous dataset
     imports = [ROOT.RooFit.Import("Binned_D0_sample", Binned_D0), ROOT.RooFit.Import("Binned_D0bar", Binned_D0bar)]
-    simultaneous_data = RooDataHist("simultaneous_data", "simultaneous data", RooArgList(D0_M), ROOT.RooFit.Index(binned_sample), *imports)
+    simultaneous_data = RooDataHist("simultaneous_data", "simultaneous data", RooArgList(D0_MM), ROOT.RooFit.Index(binned_sample), *imports)
 
     # Performs the simultaneous fit
     #enableBinIntegrator(model_D0_down, numbins)
@@ -216,10 +232,9 @@ if binned:
 fitResult.Print()
 
 # Get results
-if args.year == 19:
-    if args.scheme == 'total': 
-        parameters = np.array([a0.getValV(), frac_D0.getValV(), frac_D0_2.getValV(), frac_D0bar.getValV(), frac_D0bar_2.getValV(), Nsig_D0.getValV(), Nbkg_D0.getValV(), Nsig_D0bar.getValV(), Nbkg_D0bar.getValV(), sigmaL.getValV(), sigmaR.getValV(), sigmaL2.getValV(), sigmaR2.getValV(), Jmu.getValV(), Jlam.getValV(), Jgam.getValV(), Jdel.getValV(), bifurmean.getValV(), bifurmean2.getValV(), Nsig_D0.getError(), Nsig_D0bar.getError()])
-    #else:
-        #parameters = np.array([a0.getValV(), frac_D0.getValV(), frac_D0_2.getValV(), frac_D0bar.getValV(), frac_D0bar_2.getValV(), Nsig_D0.getValV(), Nbkg_D0.getValV(), Nsig_D0bar.getValV(), Nbkg_D0bar.getValV(), Nsig_D0bar_down.getValV(), Nbkg_D0bar_down.getValV(), Nsig_D0bar_up.getValV(), Nbkg_D0bar_up.getValV(), sigmaL.getValV(), sigmaR.getValV(), sigmaL2.getValV(), sigmaR2.getValV(), frac_D0_down_2.getValV(), frac_D0_up_2.getValV(), frac_D0bar_down_2.getValV(), frac_D0bar_up_2.getValV(), Jmu.getValV(), Jlam.getValV(), Jgam.getValV(), Jdel.getValV(), bifurmean.getValV(), bifurmean2.getValV(),  Nsig_D0_down.getError(), Nsig_D0_up.getError(), Nsig_D0bar_down.getError(), Nsig_D0bar_up.getError()])np.savetxt(f"{args.path}/fit_parameters.txt", parameters, delimiter=',')
+if args.scheme == 'total': 
+    parameters = np.array([a0.getValV(), frac_D0.getValV(), frac_D0_2.getValV(), frac_D0bar.getValV(), frac_D0bar_2.getValV(), Nsig_D0.getValV(), Nbkg_D0.getValV(), Nsig_D0bar.getValV(), Nbkg_D0bar.getValV(), sigmaL.getValV(), sigmaR.getValV(), sigmaL2.getValV(), sigmaR2.getValV(), Jmu.getValV(), Jlam.getValV(), Jgam.getValV(), Jdel.getValV(), bifurmean.getValV(), bifurmean2.getValV(), Nsig_D0.getError(), Nsig_D0bar.getError()])
+#else:
+    #parameters = np.array([a0.getValV(), frac_D0.getValV(), frac_D0_2.getValV(), frac_D0bar.getValV(), frac_D0bar_2.getValV(), Nsig_D0.getValV(), Nbkg_D0.getValV(), Nsig_D0bar.getValV(), Nbkg_D0bar.getValV(), Nsig_D0bar_down.getValV(), Nbkg_D0bar_down.getValV(), Nsig_D0bar_up.getValV(), Nbkg_D0bar_up.getValV(), sigmaL.getValV(), sigmaR.getValV(), sigmaL2.getValV(), sigmaR2.getValV(), frac_D0_down_2.getValV(), frac_D0_up_2.getValV(), frac_D0bar_down_2.getValV(), frac_D0bar_up_2.getValV(), Jmu.getValV(), Jlam.getValV(), Jgam.getValV(), Jdel.getValV(), bifurmean.getValV(), bifurmean2.getValV(),  Nsig_D0_down.getError(), Nsig_D0_up.getError(), Nsig_D0bar_down.getError(), Nsig_D0bar_up.getError()])np.savetxt(f"{args.path}/fit_parameters.txt", parameters, delimiter=',')
 np.savetxt(f"{args.path}/fit_parameters.txt", parameters, delimiter=',')
 print("My program took", time.time() - start_time, "to run")

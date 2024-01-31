@@ -28,7 +28,7 @@ git pull origin master
 The different scripts can be run individually (note that a different set of arguments is required for each), or as a whole using the bash script *main.sh*.
 In order to use *main.sh* 3 arguments are required. These are:
 - The path where the output should be written
-- The size or amount of data to be used [small, medium, large, [range(0,800) and divisible by 10]]
+- The size or amount of data to be used [range(0,800) and divisible by 10]
 - Whether a binned fit should be performed (otherwise unbinned fit) [y, Y, n, N]
 
 The range is divisible by 10 so when performing the fit, the desired root files can be achieved via a loop. An input of 20 will allow the fit to add the root files of 20 and 10 to the TChain.

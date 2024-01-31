@@ -77,9 +77,6 @@ def size_argument(value):
             return int_value
         else:
             raise argparse.ArgumentTypeError("Integer value must be between 1 and 800 and be divisible by 10.")
-    elif value.lower() in ["small", "medium", "large"]:
-        # If the input is one of the predefined strings, return it
-        return value.lower()
     else:
         raise argparse.ArgumentTypeError("Invalid value. Choose between 'small', 'medium', 'large', or an integer between 1 and 800 that is divisible by 10.")
 

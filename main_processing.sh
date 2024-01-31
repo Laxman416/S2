@@ -76,8 +76,10 @@ for year in 16 17 18; do
     echo "Multiple candidates have been removed"
 done
 
-# python fit_global_total.py --year $year --size $size --path $directory"/model_fitting/global" --binned_fit $binned --input $directory"/selected_data" --scheme "total"
-# for meson in D0 D0bar
-# do 
-#     python model_fitting_total.py --year $year --size $size --meson $meson --path $directory"/model_fitting/global" --input $directory"/selected_data" --parameters_path $directory"/model_fitting/global" --scheme 'total' --binned_fit $binned
-# done
+# Remove files that don't end with "_clean.root"
+find $directory/selected_data -type f ! -name '*_clean.root' -exec rm -f {} +
+
+# list the remaining files (those ending with "_clean.root")
+find $directory/selected_data  -type f -name '*_clean.root'
+
+echo "Unneccesary files have been removed"
