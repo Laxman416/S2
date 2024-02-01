@@ -33,7 +33,7 @@ def parse_arguments():
     
 
     --size      Used to specify the amount of events the user is interested in analysing.
-                The argument must be one of: [large, small, medium, 1-8]. The integers specify the number of root
+                The argument must be one of:  [1-800]. The integers must be in steps of 10. The integers specify the number of root
                 files to be read in. Large is equivalent to 8. Medium is equivalent to 4. Small takes 200000 events.
     --polarity  Used to specify the polarity of the magnet the user is interested in.
                 The argument must be one of: [up, down].
@@ -152,7 +152,7 @@ if isinstance(size_value, int):
     
 
 D0_MM = ROOT.RooRealVar("D0_MM", "D0 mass / [MeV/c*c]", 1815, 1910)
-
+print('Entries', ttree_D0.GetEntries())
 # Johnson SU Distribution
 Jmu = RooRealVar("Jmu", "Jmu", 1865, 1860, 1870)
 Jlam = RooRealVar("Jlam", "Jlam", 16.3, 10, 20)
@@ -188,8 +188,8 @@ frac_D0bar_2 = RooRealVar("frac_D0bar_2", "frac_D0bar_2", 0.6, 0, 1)
 # Generate normalisation variables
 Nsig_D0 = ROOT.RooRealVar("Nsig_D0", "Nsig_D0", 0.95*ttree_D0.GetEntries(), 0, ttree_D0.GetEntries())
 Nsig_D0bar = ROOT.RooRealVar("Nsig_D0bar", "Nsig_D0bar", 0.95*ttree_D0bar.GetEntries(), 0, ttree_D0bar.GetEntries())
-Nbkg_D0 = ROOT.RooRealVar("Nbkg_D0", "Nbkg_D0", 0.05*ttree_D0.GetEntries(), 0, ttree_D0.GetEntries())
-Nbkg_D0bar = ROOT.RooRealVar("Nbkg_D0bar", "Nbkg_D0bar", 0.05*ttree_D0bar.GetEntries(), 0, ttree_D0bar.GetEntries())
+Nbkg_D0 = ROOT.RooRealVar("Nbkg_D0", "Nbkg_D0", 0.05*ttree_D0.GetEntries(), 0.01*ttree_D0bar.GetEntries(), 0.1*ttree_D0.GetEntries())
+Nbkg_D0bar = ROOT.RooRealVar("Nbkg_D0bar", "Nbkg_D0bar", 0.05*ttree_D0bar.GetEntries(), 0.01*ttree_D0bar.GetEntries(), 0.1*ttree_D0bar.GetEntries())
 
 if binned:
     # D0_Hist recalled from memory and saved to the local variable
@@ -235,6 +235,6 @@ fitResult.Print()
 if args.scheme == 'total': 
     parameters = np.array([a0.getValV(), frac_D0.getValV(), frac_D0_2.getValV(), frac_D0bar.getValV(), frac_D0bar_2.getValV(), Nsig_D0.getValV(), Nbkg_D0.getValV(), Nsig_D0bar.getValV(), Nbkg_D0bar.getValV(), sigmaL.getValV(), sigmaR.getValV(), sigmaL2.getValV(), sigmaR2.getValV(), Jmu.getValV(), Jlam.getValV(), Jgam.getValV(), Jdel.getValV(), bifurmean.getValV(), bifurmean2.getValV(), Nsig_D0.getError(), Nsig_D0bar.getError()])
 #else:
-    #parameters = np.array([a0.getValV(), frac_D0.getValV(), frac_D0_2.getValV(), frac_D0bar.getValV(), frac_D0bar_2.getValV(), Nsig_D0.getValV(), Nbkg_D0.getValV(), Nsig_D0bar.getValV(), Nbkg_D0bar.getValV(), Nsig_D0bar_down.getValV(), Nbkg_D0bar_down.getValV(), Nsig_D0bar_up.getValV(), Nbkg_D0bar_up.getValV(), sigmaL.getValV(), sigmaR.getValV(), sigmaL2.getValV(), sigmaR2.getValV(), frac_D0_down_2.getValV(), frac_D0_up_2.getValV(), frac_D0bar_down_2.getValV(), frac_D0bar_up_2.getValV(), Jmu.getValV(), Jlam.getValV(), Jgam.getValV(), Jdel.getValV(), bifurmean.getValV(), bifurmean2.getValV(),  Nsig_D0_down.getError(), Nsig_D0_up.getError(), Nsig_D0bar_down.getError(), Nsig_D0bar_up.getError()])np.savetxt(f"{args.path}/fit_parameters.txt", parameters, delimiter=',')
+    #parameters = np.array([a0.getValV(), frac_D0.getValV(), frac_D0_2.getValV(), frac_D0bar.getValV(), frac_D0bar_2.getValV(), Nsig_D0.getValV(), Nbkg_D0.getValV(), Nsig_D0bar.getValV(), Nbkg_D0bar.getValV(), Nsig_D0bar_down.getValV(), Nbkg_D0bar_down.getValV(), Nsig_D0bar_up.getValV(), Nbkg_D0bar_up.getValV(), sigmaL.getValV(), sigmaR.getValV(), sigmaL2.getValV(), sigmaR2.getValV(), frac_D0_down_2.getValV(), frac_D0_up_2.getValV(), frac_D0bar_down_2.getValV(), frac_D0bar_up_2.getValV(), Jmu.getValV(), Jlam.getValV(), Jgam.getValV(), Jdel.getValV(), bifurmean.getValV(), bifurmean2.getValV(),  Nsig_D0_down.getError(), Nsig_D0_up.getError(), Nsig_D0bar_down.getError(), Nsig_D0bar_up.getError()])
 np.savetxt(f"{args.path}/fit_parameters.txt", parameters, delimiter=',')
 print("My program took", time.time() - start_time, "to run")
