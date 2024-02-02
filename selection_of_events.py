@@ -99,6 +99,7 @@ def get_data():
     max_events = None
     
     if 0<int(options.size)<800:
+        #data_to_concatenate = np.arange(int(options.size)-9, int(options.size)+1, 1)
         data_to_concatenate = np.arange(int(options.size)-9, int(options.size)+1, 1)
 
     

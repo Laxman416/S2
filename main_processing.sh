@@ -5,7 +5,9 @@
 
 directory=$1
 size=$2
-binned=$3
+minsize=$3 # Does a loop for size in the range size to minsize
+binned=$4
+
 
 
 if [[ "$binned" != "y" ]]; then
@@ -21,40 +23,20 @@ if [[ "$binned" != "y" ]]; then
     fi
 fi
 
+if ! [[ "$minsize" =~ ^[0-9]+$ ]]; then
+  echo "WARNING: You did not select a valid option for the minsize fit"
+  echo
+  echo "The selection will run over sizes in the array [10, ..., $size]"
+  minsize=10
+else
+  echo "The selection will run over sizes in the array [$minsize,...,$size]"
+fi
 # Create necessary directories to store output
 
 
 
-mkdir $directory
-mkdir $directory"/selected_data"
-mkdir $directory"/binned_data"
-mkdir $directory"/binned_data/binning_scheme"
-mkdir $directory"/model_fitting"
-mkdir $directory"/model_fitting/global"
-mkdir $directory"/model_fitting/local"
-mkdir $directory"/model_fitting/pT"
-mkdir $directory"/model_fitting/eta"
-for ind in {0..99}
-do
-    index=$( printf '%02d' $ind)
-    mkdir $directory"/model_fitting/local/"$index
-done
-for ind in {0..9}
-do
-    index=$( printf '%01d' $ind)
-    mkdir $directory"/model_fitting/pT/"$index
-    mkdir $directory"/model_fitting/eta/"$index
-done
-mkdir $directory"/raw_asymmetry_outcome"
-mkdir $directory"/raw_asymmetry_outcome/chi_squared"
-mkdir $directory"/raw_asymmetry_outcome/raw_asymmetry"
-mkdir $directory"/raw_asymmetry_outcome/raw_asymmetry/pT"
-mkdir $directory"/raw_asymmetry_outcome/raw_asymmetry/eta"
-mkdir $directory"/raw_asymmetry_outcome/raw_asymmetry/local"
-mkdir $directory"/results"
-mkdir $directory"/binned_data/eta"
-mkdir $directory"/binned_data/pT"
-mkdir $directory"/binned_data/local"
+mkdir "/eos/lhcb/user/l/lseelan/"$directory
+mkdir "/eos/lhcb/user/l/lseelan/"$directory"/selected_data"
 
 echo "The necessary directories have been created"
 echo
@@ -62,24 +44,41 @@ echo
 
 # Run the code
 
+if ! [[ "$minsize" =~ ^[0-9]+$ ]]; then
+  echo "WARNING: You did not select a valid option for the minsize fit"
+  echo
+  echo "The selection will run over sizes in the array [10, ..., $size]"
+  minsize=10
+else
+  echo "The selection will run over sizes in the array [$minsize,...,$size]"
+fi
 # Saves all years in one folder
-for year in 16 17 18; do 
-    echo "Year" $year
-    python selection_of_events.py --year $year --size $size --path $directory"/selected_data"
+while [ $size -ge $minsize ]; do
+    echo "Inside the loop. Size: $size"
+    for year in 17 18; do 
+        echo "Year" $year
+        python selection_of_events.py --year $year --size $size --path "/eos/lhcb/user/l/lseelan/"$directory"/selected_data"
 
-    echo
-    for polar in up down
-    do
+        echo
+        for polar in up down
+        do
 
-        python multiple_candidates.py --year $year --size $size --polarity $polar --path $directory"/selected_data"
+            python multiple_candidates.py --year $year --size $size --polarity $polar --path "/eos/lhcb/user/l/lseelan/"$directory"/selected_data"
+        done
+        echo "Multiple candidates have been removed"
     done
-    echo "Multiple candidates have been removed"
+    size=$((size - 10))  # For example, decrease 'size' by 10 in each iteration
 done
 
-# Remove files that don't end with "_clean.root"
-find $directory/selected_data -type f ! -name '*_clean.root' -exec rm -f {} +
+## Double check "*_clean.root" not anything else
+#################################################################################
+#################################################################################
+#################################################################################
 
-# list the remaining files (those ending with "_clean.root")
-find $directory/selected_data  -type f -name '*_clean.root'
+# # Remove files that don't end with "_clean.root"
+# find "/eos/lhcb/user/l/lseelan/"$directory"/selected_data" -type f ! -name '*_clean.root' -exec rm -f {} +
 
-echo "Unneccesary files have been removed"
+# # list the remaining files (those ending with "_clean.root")
+# find "/eos/lhcb/user/l/lseelan/"$directory"/selected_data"  -type f -name '*_clean.root'
+
+# echo "Unneccesary files have been removed"

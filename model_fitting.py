@@ -29,7 +29,7 @@ def dir_path(string):
         return string
     else:
         raise NotADirectoryError(string)
-        
+
 def size_argument(value):
     if value.isdigit():
         # If the input is a digit, treat it as an integer
@@ -45,9 +45,11 @@ def parse_arguments():
     '''
     Parses the arguments needed along the code. Arguments:
     
+    --year      Used to specify the year at which the data was taken the user is interested in.
+                The argument must be one of: [16, 17, 18]. These referr to 2016, 2017 & 2018, respectively.
     --size      Used to specify the amount of events the user is interested in analysing.
-                The argument must be one of: [1-100]. The integers specify the number of root
-                files to be read in. Large is equivalent to 8. Medium is equivalent to 4. Small takes 200000 events.
+                The argument must be one of: [1-800]. The integers specify the number of root
+                files to be read in.
     --polarity  Used to specify the polarity of the magnet the user is interested in.
                 The argument must be one of: [up, down].
     --meson     Used to specify the meson the user is interested in.
@@ -66,12 +68,25 @@ def parse_arguments():
     Returns the parsed arguments.
     '''
     parser = argparse.ArgumentParser()
-
+    parser.add_argument(
+        "--year",
+        type=int,
+        choices=[16,17,18],
+        required=True,
+        help="flag to set the data taking year."
+    )
     parser.add_argument(
         "--size",
         type=size_argument,
         required=True,
-        help="flag to set the data taking size."
+        help="flag to set the data taking year."
+    )
+    parser.add_argument(
+        "--polarity",
+        type=str,
+        choices=["up","down"],
+        required=True,
+        help="flag to set the data taking polarity."
     )
     parser.add_argument(
         "--meson",
@@ -142,7 +157,6 @@ def disableBinIntegrator(func):
     """
     func.setIntegratorConfig()
     func.forceNumInt(False)
-
 def gaussian(x, A, mu, sig):
     return A * np.exp(-np.power(x - mu, 2.) / (2 * np.power(sig, 2.)))
 
@@ -162,15 +176,18 @@ numbins = 240
 lower_boundary = 1815
 upper_boundary = 1910
 meson = options.meson
-
-
-if options.scheme == "eta" or options.scheme == "pT" or options.scheme == "pT_eta":
-    plot_type = f"Total Bin{options.bin}"
-else:
-    if meson == 'D0':
-        plot_type = f"Total D^{{0}}"
+polarity = options.polarity
+polarity = polarity[0].upper() + polarity[1:]
+if options.year == 19:
+    if options.scheme == "eta" or options.scheme == "pT" or options.scheme == "pT_eta":
+        plot_type = f"Total Mag{polarity} Bin{options.bin}"
     else:
-        plot_type = f"Total \\bar{{D}}^{{0}}"
+        plot_type = f"Total Mag{polarity}"
+else:
+    if options.scheme == "eta" or options.scheme == "pT" or options.scheme == "pT_eta":
+        plot_type = f"20{options.year} Mag{polarity} Bin{options.bin}"
+    else:
+        plot_type = f"20{options.year} Mag{polarity}"
 
 
 if options.binned_fit=="y" or options.binned_fit=="Y":
@@ -181,31 +198,12 @@ else:
 # Read data
 ttree = TChain("D02Kpi_Tuple/DecayTree")
 
-if options.scheme == "pT_eta":
-    ttree.Add(f"{options.input}/{options.meson}_{options.size}_bin{options.bin}.root")
-elif options.scheme == "total":
-    ttree.Add(f"{options.input}/{options.meson}_up_data_16_{options.size}_clean.root")
-    ttree.Add(f"{options.input}/{options.meson}_up_data_17_{options.size}_clean.root")
-    ttree.Add(f"{options.input}/{options.meson}_up_data_18_{options.size}_clean.root")
-    ttree.Add(f"{options.input}/{options.meson}_down_data_16_{options.size}_clean.root")
-    ttree.Add(f"{options.input}/{options.meson}_down_data_17_{options.size}_clean.root")
-    ttree.Add(f"{options.input}/{options.meson}_down_data_18_{options.size}_clean.root")
-elif options.scheme == "pT":
-    ttree.Add(f"{options.input}/{options.meson}_{options.size}_bin{options.bin}.root")
-elif options.scheme == "eta":
-    ttree.Add(f"{options.input}/{options.meson}_{options.size}_bin{options.bin}.root")
-
 size_value = options.size
 size_value = int(size_value)
 size_list = generate_list(size_value)
 for valuesize in size_list:
     if options.scheme == "total":
-        ttree.Add(f"{options.input}/{options.meson}_up_data_16_{valuesize}_clean.root")
-        ttree.Add(f"{options.input}/{options.meson}_up_data_17_{valuesize}_clean.root")
-        ttree.Add(f"{options.input}/{options.meson}_up_data_18_{valuesize}_clean.root")
-        ttree.Add(f"{options.input}/{options.meson}_down_data_16_{valuesize}_clean.root")
-        ttree.Add(f"{options.input}/{options.meson}_down_data_17_{valuesize}_clean.root")
-        ttree.Add(f"{options.input}/{options.meson}_down_data_18_{valuesize}_clean.root")
+        ttree.Add(f"{options.input}/20{options.year}/{options.polarity}/{options.meson}/{options.meson}_{options.polarity}_data_{options.year}_{valuesize}_clean.root")
         ttree.SetBranchStatus("*", 0)
         ttree.SetBranchStatus("D0_MM", 1)
 
@@ -224,49 +222,64 @@ parameters = np.loadtxt(f"{options.parameters_path}/fit_parameters.txt", delimit
 
 ttree.SetBranchStatus("*", 0)
 ttree.SetBranchStatus("D0_MM", 1)
-D0_MM = RooRealVar("D0_MM", f"D0 mass / [MeVc^{-2}]", 1815, 1910) # Data - invariant mass
+D0_M = RooRealVar("D0_MM", f"D0 mass / [MeVc^{-2}]", 1815, 1910) # Data - invariant mass
 
 # #Model 1
 # Define variables for signal model, using the best fit parameters generated from fit_global.py
 # Model Bifurcated Gaussian
-bifurmean = RooRealVar("bifurmean", "bifurmean", parameters[17])
-sigmaL = RooRealVar("sigmaL", "sigmaL", parameters[9])
-sigmaR = RooRealVar("sigmaR", "sigmaR", parameters[10])
-Bifurgauss = RooBifurGauss("Bifurgauss", "Bifurgauss", D0_MM, bifurmean, sigmaL, sigmaR)
+bifurmean = RooRealVar("bifurmean", "bifurmean", parameters[25])
+sigmaL = RooRealVar("sigmaL", "sigmaL", parameters[13])
+sigmaR = RooRealVar("sigmaR", "sigmaR", parameters[14])
+Bifurgauss = RooBifurGauss("Bifurgauss", "Bifurgauss", D0_M, bifurmean, sigmaL, sigmaR)
 
 # Model Johnson SU Distribution
-Jmu = RooRealVar("Jmu", "Jmu", parameters[13])
-Jlam = RooRealVar("Jlam", "Jlam", parameters[14])
-Jgam = RooRealVar("Jgam", "Jgam", parameters[15])
-Jdel = RooRealVar("Jdel", "Jdel", parameters[16])
-Johnson = RooJohnson("Johnson","Johnson", D0_MM, Jmu, Jlam, Jgam, Jdel)
+Jmu = RooRealVar("Jmu", "Jmu", parameters[21])
+Jlam = RooRealVar("Jlam", "Jlam", parameters[22])
+Jgam = RooRealVar("Jgam", "Jgam", parameters[23])
+Jdel = RooRealVar("Jdel", "Jdel", parameters[24])
+Johnson = RooJohnson("Johnson","Johnson", D0_M, Jmu, Jlam, Jgam, Jdel)
 
 # Model Bifurcated Gaussian
-bifurmean2 = RooRealVar("bifurmeam2", "bifurmean2", parameters[18])
-sigmaL2 = RooRealVar("sigmaL2", "sigmaL2", parameters[11])
-sigmaR2 = RooRealVar("sigmaR2", "sigmaR2", parameters[12])
-Bifurgauss2 = RooBifurGauss("Bifurgauss2", "Bifurgauss", D0_MM, bifurmean2, sigmaL2, sigmaR2)
+bifurmean2 = RooRealVar("bifurmeam2", "bifurmean2", parameters[26])
+sigmaL2 = RooRealVar("sigmaL2", "sigmaL2", parameters[15])
+sigmaR2 = RooRealVar("sigmaR2", "sigmaR2", parameters[16])
+Bifurgauss2 = RooBifurGauss("Bifurgauss2", "Bifurgauss", D0_M, bifurmean2, sigmaL2, sigmaR2)
 
 # Model Exponential Background
-#a = RooRealVar("a0", "a0", parameters[0])
-a = RooRealVar("a0", "a0", -0.01)
-
-background = RooExponential("Exponential", "Exponential", D0_MM, a)
+a = RooRealVar("a0", "a0", parameters[0])
+background = RooExponential("Exponential", "Exponential", D0_M, a)
 
 if options.meson == "D0":
-    # D0 
-    frac = RooRealVar("frac_D0", "frac_D0", parameters[1])
-    frac2 = RooRealVar("frac_D0_2", "frac_D0_2", parameters[2])
-    Nsig = RooRealVar("Nbkg_D0", "Nbkg_D0", parameters[5])
-    Nbkg = RooRealVar("Nbkg_D0", "Nbkg_D0", parameters[6])
-    Nsig_error = parameters[19]
+    # D0 MagDown
+    if options.polarity == "down":
+        frac = RooRealVar("frac_D0_down", "frac_D0_down", parameters[1])
+        frac2 = RooRealVar("frac_D0_down_2", "frac_D0_down_2", parameters[17])
+        Nsig = RooRealVar("Nbkg_D0_up", "Nbkg_D0_up", parameters[5])
+        Nbkg = RooRealVar("Nbkg_D0_down", "Nbkg_D0_down", parameters[6])
+        Nsig_error = parameters[27]
+    # D0 MagUp
+    elif options.polarity == "up":
+        frac = RooRealVar("frac_D0_up", "frac_D0_up", parameters[2])
+        frac2 = RooRealVar("frac_D0_up_2", "frac_D0_up_2", parameters[18])
+        Nsig = RooRealVar("Nbkg_D0_up", "Nbkg_D0_up", parameters[7])
+        Nbkg = RooRealVar("Nbkg_D0_down", "Nbkg_D0_down", parameters[8])
+        Nsig_error = parameters[28]
 elif options.meson == "D0bar":
-    # D0bar 
-    frac = RooRealVar("frac_D0bar", "frac_D0bar", parameters[3])
-    frac2 = RooRealVar("frac_D0bar", "frac_D0bar_down_2", parameters[4])
-    Nsig = RooRealVar("Nbkg_D0bar", "Nbkg_D0bar", parameters[7])
-    Nbkg = RooRealVar("Nbkg_D0bar", "Nbkg_D0bar", parameters[8])
-    Nsig_error = parameters[20]
+    # D0bar MagDown
+    if options.polarity == "down":
+        frac = RooRealVar("frac_D0bar_down", "frac_D0bar_down", parameters[3])
+        frac2 = RooRealVar("frac_D0bar_down_2", "frac_D0bar_down_2", parameters[19])
+        Nsig = RooRealVar("Nbkg_D0_up", "Nbkg_D0_up", parameters[9])
+        Nbkg = RooRealVar("Nbkg_D0_down", "Nbkg_D0_down", parameters[10])
+        Nsig_error = parameters[29]
+    # D0bar MagUp
+    elif options.polarity == "up":
+        frac = RooRealVar("frac_D0bar_up", "frac_D0bar_up", parameters[4])
+        frac2 = RooRealVar("frac_D0bar_up_2", "frac_D0bar_up_2", parameters[20])
+        Nsig = RooRealVar("Nbkg_D0_up", "Nbkg_D0_up", parameters[11])
+        Nbkg = RooRealVar("Nbkg_D0_down", "Nbkg_D0_down", parameters[12])
+        Nsig_error = parameters[30]
+
 
 
 signal = RooAddPdf("signal", "signal", RooArgList(Johnson, Bifurgauss, Bifurgauss2), RooArgList(frac, frac2))
@@ -291,12 +304,12 @@ if binned:
         # D0_Hist recalled from memory and saved to the local variable
         D0_Hist = ROOT.gPad.GetPrimitive("D0_Hist")
         # Creating Binned container sets using RooDataHist
-        Binned_data = RooDataHist("Binned_data", "Binned Data Set", RooArgList(D0_MM), D0_Hist)
-        enableBinIntegrator(signal, D0_MM.numBins())
+        Binned_data = RooDataHist("Binned_data", "Binned Data Set", RooArgList(D0_M), D0_Hist)
+        enableBinIntegrator(signal, D0_M.numBins())
         result = model["total"].fitTo(Binned_data, RooFit.Save(True), RooFit.Extended(True), IntegrateBins = 1e-03)
 
 
-        frame = D0_MM.frame(RooFit.Name(""))
+        frame = D0_M.frame(RooFit.Name(""))
         legend_entries = dict()
 
         Binned_data.plotOn(frame, ROOT.RooFit.Name("remove_me_A"))
@@ -354,6 +367,12 @@ if binned:
         D0_Hist.SetMarkerColor(ROOT.kBlack)
         D0_Hist.SetTitle("Data")
 
+        # Scale up the error bars by a factor of 5 (you can adjust the scaling factor as needed)
+        #if global_local == False:
+            # for bin in range(1, D0_Hist.GetNbinsX() + 1):
+            #     error = D0_Hist.GetBinError(bin)
+            #     D0_Hist.SetBinError(bin, 10 * error)
+
         frame.addTH1(D0_Hist, "pe")
         legend_entries[D0_Hist.GetName()] = {"title": D0_Hist.GetTitle(), "style": "pe"}
 
@@ -364,7 +383,7 @@ if binned:
             mD0_bins.append(D0_Hist.GetBinLowEdge(i))
         mD0_bins.append(D0_Hist.GetBinLowEdge(numbins) + D0_Hist.GetBinWidth(numbins))
         mD0_bins = np.array(mD0_bins, dtype=float)
-        frame.SetYTitle(r"Entries")
+        frame.SetYTitle(r"Entries [MeVc^{-2}]")
         frame.GetYaxis().SetTitleOffset(0.95)
 
 
@@ -415,7 +434,7 @@ if binned:
         
 
         # Plots the pull distribution, where bad pulls (>5 sigma away from the fit) are made to be red
-        pull_frame = D0_MM.frame(ROOT.RooFit.Title(" "))
+        pull_frame = D0_M.frame(ROOT.RooFit.Title(" "))
         pull_TH1 = ROOT.TH1D("pull_TH1", "pull_TH1", numbins, mD0_bins)
         bad_pull_TH1 = ROOT.TH1D("bad_pull_TH1", "bad_pull_TH1", numbins, mD0_bins)
         for i in range(pull_hist.GetN()):
@@ -458,12 +477,12 @@ if binned:
         elif meson == "D0bar":
             pull_frame.GetXaxis().SetTitle(r"#it{#bar{D}^{0}} mass [MeVc^{-2}]")
 
-        line = ROOT.TLine(D0_MM.getMin(), 0, D0_MM.getMax(), 0)
+        line = ROOT.TLine(D0_M.getMin(), 0, D0_M.getMax(), 0)
         pull_frame.Draw()
         line.Draw("same")
 
-        three = ROOT.TLine(D0_MM.getMin(), 3, D0_MM.getMax(), 3)
-        nthree = ROOT.TLine(D0_MM.getMin(), -3, D0_MM.getMax(), -3)
+        three = ROOT.TLine(D0_M.getMin(), 3, D0_M.getMax(), 3)
+        nthree = ROOT.TLine(D0_M.getMin(), -3, D0_M.getMax(), -3)
         three.SetLineColor(ROOT.kRed)
         three.SetLineStyle(9)
         nthree.SetLineColor(ROOT.kRed)
@@ -505,16 +524,29 @@ if binned:
         except RuntimeError:
             print("Optimal parameters not found")
             Failed = 1
-        if meson == "D0":
-            if options.scheme == "eta" or options.scheme == "pT" or options.scheme == "pT_eta":
-                plot_type2 = f"Total D^{{0}} Bin{options.bin}"
+        if options.year == 19:
+            if meson == "D0":
+                if options.scheme == "eta" or options.scheme == "pT" or options.scheme == "pT_eta":
+                    plot_type2 = f"Total D^{{0}} Mag{polarity} Bin{options.bin}"
+                else:
+                    plot_type2 = f"Total D^{{0}} Mag{polarity}"
             else:
-                plot_type2 = f"Total D^{{0}}"
+                if options.scheme == "eta" or options.scheme == "pT" or options.scheme == "pT_eta":
+                    plot_type2 = f"Total \\bar{{D}}^{{0}} Mag{polarity} Bin{options.bin}"
+                else:
+                    plot_type2 = f"Total \\bar{{D}}^{{0}} Mag{polarity}"
         else:
-            if options.scheme == "eta" or options.scheme == "pT" or options.scheme == "pT_eta":
-                plot_type2 = f"Total \\bar{{D}}^{{0}} Bin{options.bin}"
+            if meson == "D0":
+                if options.scheme == "eta" or options.scheme == "pT" or options.scheme == "pT_eta":
+                    plot_type2 = f"20{options.year} D^{{0}} Mag{polarity} Bin{options.bin}"
+                else:
+                    plot_type2 = f"20{options.year} D^{{0}} Mag{polarity}"
             else:
-                plot_type2 = f"Total \\bar{{D}}^{{0}}"
+                if options.scheme == "eta" or options.scheme == "pT" or options.scheme == "pT_eta":
+                    plot_type2 = f"20{options.year} \\bar{{D}}^{{0}} Mag{polarity} Bin{options.bin}"
+                else:
+                    plot_type2 = f"20{options.year} \\bar{{D}}^{{0}} Mag{polarity}"
+
 
         if Failed == 0:
             gaussian_fit = ROOT.TF1("gaussian_fit", "gaus", -5, 5)
@@ -574,10 +606,10 @@ if binned:
 
         print("Saving plots")
         if options.scheme != "total":
-            c.SaveAs(f"{options.path}/{options.meson}_{options.size}_bin{options.bin}_fit_ANA.pdf")
+            c.SaveAs(f"{options.path}/{options.meson}_{options.polarity}_{options.year}_{options.size}_bin{options.bin}_fit_ANA.pdf")
             if Failed == 0:
-                pull_canvas.SaveAs(f"{options.path}/{options.meson}_{options.size}_bin{options.bin}_fit_pulls.pdf")
-            file = open(f"{options.path}/yields_{options.meson}_{options.size}_bin{options.bin}.txt", "w+")
+                pull_canvas.SaveAs(f"{options.path}/{options.meson}_{options.polarity}_{options.year}_{options.size}_bin{options.bin}_fit_pulls.pdf")
+            file = open(f"{options.path}/yields_{options.meson}_{options.polarity}_{options.year}_{options.size}_bin{options.bin}.txt", "w+")
             if Failed == 0:
                 text = str(Nsig.getValV()) + ', ' + str(Nsig_error) + ', ' + str(Nbkg.getValV()) + ', ' + str(Nbkg.getError()) + ', ' + str_pull_mean + ', ' + str_pull_sigma
             else:
@@ -585,10 +617,10 @@ if binned:
             file.write(text)
             file.close()
         else:
-            c.SaveAs(f"{options.path}/{options.meson}_{options.size}_fit_ANA.pdf")
+            c.SaveAs(f"{options.path}/{options.meson}_{options.polarity}_{options.year}_{options.size}_fit_ANA.pdf")
             if Failed == 0:
-                pull_canvas.SaveAs(f"{options.path}/{options.meson}_{options.size}_fit_pulls.pdf")
-            file = open(f"{options.path}/yields_{options.meson}_{options.size}.txt", "w+")
+                pull_canvas.SaveAs(f"{options.path}/{options.meson}_{options.polarity}_{options.year}_{options.size}_fit_pulls.pdf")
+            file = open(f"{options.path}/yields_{options.meson}_{options.polarity}_{options.year}_{options.size}.txt", "w+")
             # Nsig Nsig_Err NBkg NBkg error pull_mean pull_sigma
             if Failed == 0:
                 text = str(Nsig.getValV()) + ', ' + str(Nsig_error) + ', ' + str(Nbkg.getValV()) + ', ' + str(Nbkg.getError()) + ', ' + str_pull_mean + ', ' + str_pull_sigma
@@ -598,7 +630,7 @@ if binned:
             file.close()
         disableBinIntegrator(signal)
         
-
+        
 
 print(ttree.GetEntries())
 gc.collect()

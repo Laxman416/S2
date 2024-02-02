@@ -127,14 +127,14 @@ def parse_arguments():
     
     return parser.parse_args()
         
-def save_file(filename, cut_data):
+def save_file(filename, cut_data, path):
     '''
     Saves a .root file containing the data in cut_data. It is written to the path specified
     by the user, and has the name given by filename.
     '''
     tree = "D02Kpi_Tuple/DecayTree"
 
-    filename = f"{args.path}/{filename}.root" 
+    filename = f"{path}/{filename}.root" 
     print(f"Writing to {filename}...")
     outfile = ur.recreate(f"{filename}") # create the write file
 
@@ -153,8 +153,10 @@ def save_all(year, size):
     files, based on the origin of the decay (D0, D0bar or any).
     '''
     names = ["D0_", "D0bar_", ""]
-    for index, dataset in enumerate([D0_DATA, D0BAR_DATA, DATA]):
-        save_file(f'{names[index]}{args.polarity}_data_{year}_{size}_clean', dataset)
+    paths = [f"{args.path}/20{args.year}/{args.polarity}/D0", f"{args.path}/20{args.year}/{args.polarity}/D0bar", f"{args.path}/20{args.year}/{args.polarity}/both"]
+
+    for index, (dataset, path) in enumerate(zip([D0_DATA, D0BAR_DATA, DATA], paths)):
+        save_file(f'{names[index]}{args.polarity}_data_{year}_{size}_clean', dataset, path)
     
     return print(f'Saved {size} data for year 20{year}')
 
