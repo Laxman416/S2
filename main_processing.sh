@@ -55,7 +55,7 @@ fi
 # Saves all years in one folder
 while [ $size -ge $minsize ]; do
     echo "Inside the loop. Size: $size"
-    for year in 17 18; do 
+    for year in 16; do 
         echo "Year" $year
         python selection_of_events.py --year $year --size $size --path "/eos/lhcb/user/l/lseelan/"$directory"/selected_data"
 
@@ -75,10 +75,10 @@ done
 #################################################################################
 #################################################################################
 
-# # Remove files that don't end with "_clean.root"
-# find "/eos/lhcb/user/l/lseelan/"$directory"/selected_data" -type f ! -name '*_clean.root' -exec rm -f {} +
+# Remove files that don't end with "_clean.root"
+find "/eos/lhcb/user/l/lseelan/"$directory"/selected_data" -type f ! -name '*_clean.root' -exec rm -f {} +
 
-# # list the remaining files (those ending with "_clean.root")
-# find "/eos/lhcb/user/l/lseelan/"$directory"/selected_data"  -type f -name '*_clean.root'
+# list the remaining files (those ending with "_clean.root")
+find "/eos/lhcb/user/l/lseelan/"$directory"/selected_data"  -type f -name '*_clean.root'
 
 # echo "Unneccesary files have been removed"

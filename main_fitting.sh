@@ -40,9 +40,9 @@ echo
 # Size 10: lowest. Size 20: twice as big and includes data from Size 10
 
 python fit_global.py  --year $year --size $size --path $directory"/model_fitting/global" --binned_fit $binned --input "/eos/lhcb/user/l/lseelan/Total/selected_data" --scheme "total"
-for meson in D0 D0bar
+for meson in D0 #D0bar
 do
-    for polarity in up down
+    for polarity in down # up
     do 
             python model_fitting.py --year $year --size $size --polarity $polarity --meson $meson --path $directory"/model_fitting/global" --input "/eos/lhcb/user/l/lseelan/Total/selected_data" --parameters_path $directory"/model_fitting/global" --scheme 'total' --binned_fit $binned
     done

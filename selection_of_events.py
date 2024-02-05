@@ -102,13 +102,18 @@ def get_data():
         #data_to_concatenate = np.arange(int(options.size)-9, int(options.size)+1, 1)
         data_to_concatenate = np.arange(int(options.size)-9, int(options.size)+1, 1)
 
-    
-    # reads the data from the files requested by the user and concatanates it
-    data_up = uproot.concatenate((f"{directory_up}/{code_up}_00000{i:03d}_1.charm_d02hh_dvntuple.root:{tree_name}" for i in data_to_concatenate), expressions=read_only_these_variables, max_num_elements=max_events)
-    data_down = uproot.concatenate((f"{directory_down}/{code_down}_00000{i:03d}_1.charm_d02hh_dvntuple.root:{tree_name}" for i in (data_to_concatenate+1)), expressions=read_only_these_variables, max_num_elements=max_events)
-    
-    print('checkpoint: data has been read')
-    
+
+    # # reads the data from the files requested by the user and concatanates it
+        for i in data_to_concatenate:
+            try:
+                data_up = uproot.concatenate((f"{directory_up}/{code_up}_00000{i:03d}_1.charm_d02hh_dvntuple.root:{tree_name}"), expressions=read_only_these_variables, max_num_elements=max_events)
+                data_down = uproot.concatenate((f"{directory_down}/{code_down}_00000{i:03d}_1.charm_d02hh_dvntuple.root:{tree_name}"), expressions=read_only_these_variables, max_num_elements=max_events)
+
+            except FileNotFoundError as e:
+                print(f"FileNotFoundError: {e}")
+
+        print('Checkpoint: Data has been read')
+
     return data_up, data_down
     
 def cut_data(data):
