@@ -241,10 +241,9 @@ frac_D0_up_2 = RooRealVar("frac_D0_up_2", "frac_D0_up_2", 0.3, 0, 1)
 frac_D0_up_3 = RooRealVar("frac_D0_up_3", "frac_D0_up_3", 0.4, 0, 1)
 
 # D0 MagDown
-frac_D0_down = RooRealVar("frac_D0_down", "frac_D0_down", 1.8830e-01, 0, 1)
-frac_D0_down_2 = RooRealVar("frac_D0_down_2", "frac_D0_down_2", 3.8093e-01, 0, 1)
-frac_D0_down_3 = RooRealVar("frac_D0_down_3", "frac_D0_down_3", 3.6871e-01, 0, 1)
-
+frac_D0_down = RooRealVar("frac_D0_down", "frac_D0_down", 1.9075e-01, 0, 1)
+frac_D0_down_2 = RooRealVar("frac_D0_down_2", "frac_D0_down_2", 2.2488e-01, 0, 1)
+frac_D0_down_3 = RooRealVar("frac_D0_down_3", "frac_D0_down_3", 3.0413e-01, 0, 1)
 # D0bar MagUp2
 frac_D0bar_up = RooRealVar("frac_D0bar_up", "frac_D0bar_up", 0.16, 0, 1)
 frac_D0bar_up_2 = RooRealVar("frac_D0bar_up_2", "frac_D0bar_up_2", 0.3, 0, 1)
@@ -334,6 +333,6 @@ if binned:
 fitResult.Print()
 
 # Get results
-parameters = np.array([a0.getValV(), frac_D0_down.getValV(), frac_D0_up.getValV(), frac_D0bar_down.getValV(), frac_D0bar_up.getValV(), Nsig_D0_down.getValV(), Nbkg_D0_down.getValV(), Nsig_D0_up.getValV(), Nbkg_D0_up.getValV(), Nsig_D0bar_down.getValV(), Nbkg_D0bar_down.getValV(), Nsig_D0bar_up.getValV(), Nbkg_D0bar_up.getValV(), sigmaL.getValV(), sigmaR.getValV(), sigmaL2.getValV(), sigmaR2.getValV(), frac_D0_down_2.getValV(), frac_D0_up_2.getValV(), frac_D0bar_down_2.getValV(), frac_D0bar_up_2.getValV(), Jmu.getValV(), Jlam.getValV(), Jgam.getValV(), Jdel.getValV(), bifurmean.getValV(), bifurmean2.getValV(),  Nsig_D0_down.getError(), Nsig_D0_up.getError(), Nsig_D0bar_down.getError(), Nsig_D0bar_up.getError(), mean.getValV(), sigma.getValV(), frac_D0_down_2.getValV(), frac_D0_up_2.getValV(), frac_D0bar_down_2.getValV(), frac_D0bar_up_2.getValV()])
+parameters = np.array([a0.getValV(), frac_D0_down.getValV(), frac_D0_up.getValV(), frac_D0bar_down.getValV(), frac_D0bar_up.getValV(), Nsig_D0_down.getValV(), Nbkg_D0_down.getValV(), Nsig_D0_up.getValV(), Nbkg_D0_up.getValV(), Nsig_D0bar_down.getValV(), Nbkg_D0bar_down.getValV(), Nsig_D0bar_up.getValV(), Nbkg_D0bar_up.getValV(), sigmaL.getValV(), sigmaR.getValV(), sigmaL2.getValV(), sigmaR2.getValV(), frac_D0_down_2.getValV(), frac_D0_up_2.getValV(), frac_D0bar_down_2.getValV(), frac_D0bar_up_2.getValV(), Jmu.getValV(), Jlam.getValV(), Jgam.getValV(), Jdel.getValV(), bifurmean.getValV(), bifurmean2.getValV(),  Nsig_D0_down.getError(), Nsig_D0_up.getError(), Nsig_D0bar_down.getError(), Nsig_D0bar_up.getError(), mean.getValV(), sigma.getValV(), frac_D0_down_3.getValV(), frac_D0_up_3.getValV(), frac_D0bar_down_3.getValV(), frac_D0bar_up_3.getValV()])
 np.savetxt(f"{args.path}/fit_parameters.txt", parameters, delimiter=',')
 print("My program took", time.time() - start_time, "to run")

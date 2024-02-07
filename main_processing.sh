@@ -3,7 +3,7 @@
 # # Author: Marc Oriol Pérez (marc.oriolperez@student.manchester.ac.uk)
 # # Last modified: 16th September 2023
 
-directory=$1
+directory=$1 # Directory in eos
 size=$2
 minsize=$3 # Does a loop for size in the range size to minsize
 binned=$4

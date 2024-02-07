@@ -257,9 +257,11 @@ gauss = RooGaussian("Gaussian", "Gaussian", D0_M, mean, sigma)
 if options.meson == "D0":
     # D0 MagDown
     if options.polarity == "down":
+
         frac = RooRealVar("frac_D0_down", "frac_D0_down", parameters[1])
         frac2 = RooRealVar("frac_D0_down_2", "frac_D0_down_2", parameters[17])
         frac3 = RooRealVar("frac_D0_down_3", "frac_D0_down_3", parameters[33])
+        
 
         Nsig = RooRealVar("Nbkg_D0_up", "Nbkg_D0_up", parameters[5])
         Nbkg = RooRealVar("Nbkg_D0_down", "Nbkg_D0_down", parameters[6])
