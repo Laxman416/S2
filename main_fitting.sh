@@ -38,14 +38,36 @@ echo "The necessary directories have been created"
 echo
 
 # Size 10: lowest. Size 20: twice as big and includes data from Size 10
+# ########### Model 1
+# python fit_global.py  --year $year --size $size --path $directory"/model_fitting/global" --binned_fit $binned --input "/eos/lhcb/user/l/lseelan/Total/selected_data" --scheme "total"
+# for meson in D0 #D0bar
+# do
+#     for polarity in down # up
+#     do 
+#             python model_fitting.py --year $year --size $size --polarity $polarity --meson $meson --path $directory"/model_fitting/global" --input "/eos/lhcb/user/l/lseelan/Total/selected_data" --parameters_path $directory"/model_fitting/global" --scheme 'total' --binned_fit $binned
+#     done
+# done
 
-python fit_global.py  --year $year --size $size --path $directory"/model_fitting/global" --binned_fit $binned --input "/eos/lhcb/user/l/lseelan/Total/selected_data" --scheme "total"
+# ############ Model 2
+# python Model2_pythonfiles/fit_global_model2.py  --year $year --size $size --path $directory"/model_fitting/global" --binned_fit $binned --input "/eos/lhcb/user/l/lseelan/Total/selected_data" --scheme "total"
+# for meson in D0 #D0bar
+# do
+#     for polarity in down # up
+#     do 
+#             python Model2_pythonfiles/model_fitting_model2.py --year $year --size $size --polarity $polarity --meson $meson --path $directory"/model_fitting/global" --input "/eos/lhcb/user/l/lseelan/Total/selected_data" --parameters_path $directory"/model_fitting/global" --scheme 'total' --binned_fit $binned
+#     done
+# done
+
+# echo "Plotted graphs"
+
+# ############ Model 3
+python Model3_pythonfiles/fit_global_model3.py  --year $year --size $size --path $directory"/model_fitting/global" --binned_fit $binned --input "/eos/lhcb/user/l/lseelan/Total/selected_data" --scheme "total"
 for meson in D0 #D0bar
 do
     for polarity in down # up
     do 
-            python model_fitting.py --year $year --size $size --polarity $polarity --meson $meson --path $directory"/model_fitting/global" --input "/eos/lhcb/user/l/lseelan/Total/selected_data" --parameters_path $directory"/model_fitting/global" --scheme 'total' --binned_fit $binned
+            python Model3_pythonfiles/model_fitting_model3.py --year $year --size $size --polarity $polarity --meson $meson --path $directory"/model_fitting/global" --input "/eos/lhcb/user/l/lseelan/Total/selected_data" --parameters_path $directory"/model_fitting/global" --scheme 'total' --binned_fit $binned
     done
 done
 
-echo "Plotted graphs"
+# echo "Plotted graphs"

@@ -227,23 +227,22 @@ D0_M = RooRealVar("D0_MM", f"D0 mass / [MeVc^{-2}]", 1815, 1910) # Data - invari
 # #Model 1
 # Define variables for signal model, using the best fit parameters generated from fit_global.py
 # Model Bifurcated Gaussian
-bifurmean = RooRealVar("bifurmean", "bifurmean", parameters[25])
+bifurmean = RooRealVar("bifurmean", "bifurmean", parameters[24])
 sigmaL = RooRealVar("sigmaL", "sigmaL", parameters[13])
 sigmaR = RooRealVar("sigmaR", "sigmaR", parameters[14])
 Bifurgauss = RooBifurGauss("Bifurgauss", "Bifurgauss", D0_M, bifurmean, sigmaL, sigmaR)
 
 # Model Johnson SU Distribution
-Jmu = RooRealVar("Jmu", "Jmu", parameters[21])
-Jlam = RooRealVar("Jlam", "Jlam", parameters[22])
-Jgam = RooRealVar("Jgam", "Jgam", parameters[23])
-Jdel = RooRealVar("Jdel", "Jdel", parameters[24])
+Jmu = RooRealVar("Jmu", "Jmu", parameters[20])
+Jlam = RooRealVar("Jlam", "Jlam", parameters[21])
+Jgam = RooRealVar("Jgam", "Jgam", parameters[22])
+Jdel = RooRealVar("Jdel", "Jdel", parameters[23])
 Johnson = RooJohnson("Johnson","Johnson", D0_M, Jmu, Jlam, Jgam, Jdel)
 
-# Model Bifurcated Gaussian
-bifurmean2 = RooRealVar("bifurmeam2", "bifurmean2", parameters[26])
-sigmaL2 = RooRealVar("sigmaL2", "sigmaL2", parameters[15])
-sigmaR2 = RooRealVar("sigmaR2", "sigmaR2", parameters[16])
-Bifurgauss2 = RooBifurGauss("Bifurgauss2", "Bifurgauss2", D0_M, bifurmean2, sigmaL2, sigmaR2)
+# Model Gaussian
+mean = RooRealVar("mean", "mean", parameters[25])
+sigma = RooRealVar("sigma", "sigma", parameters[15])
+gauss = RooGaussian("Gaussian", "Gaussian", D0_M, mean, sigma)
 
 # Model Exponential Background
 a = RooRealVar("a0", "a0", parameters[0])
@@ -253,45 +252,41 @@ if options.meson == "D0":
     # D0 MagDown
     if options.polarity == "down":
         frac = RooRealVar("frac_D0_down", "frac_D0_down", parameters[1])
-        # frac = RooRealVar("frac_D0_down", "frac_D0_down", 0.203)
-
-        frac2 = RooRealVar("frac_D0_down_2", "frac_D0_down_2", parameters[17])
-        # frac2 = RooRealVar("frac_D0_down_2", "frac_D0_down_2", 0.2)
-
+        frac2 = RooRealVar("frac_D0_down_2", "frac_D0_down_2", parameters[16])
         Nsig = RooRealVar("Nbkg_D0_up", "Nbkg_D0_up", parameters[5])
         Nbkg = RooRealVar("Nbkg_D0_down", "Nbkg_D0_down", parameters[6])
-        Nsig_error = parameters[27]
+        Nsig_error = parameters[26]
     # D0 MagUp
     elif options.polarity == "up":
         frac = RooRealVar("frac_D0_up", "frac_D0_up", parameters[2])
-        frac2 = RooRealVar("frac_D0_up_2", "frac_D0_up_2", parameters[18])
+        frac2 = RooRealVar("frac_D0_up_2", "frac_D0_up_2", parameters[17])
         Nsig = RooRealVar("Nbkg_D0_up", "Nbkg_D0_up", parameters[7])
         Nbkg = RooRealVar("Nbkg_D0_down", "Nbkg_D0_down", parameters[8])
-        Nsig_error = parameters[28]
+        Nsig_error = parameters[27]
 elif options.meson == "D0bar":
     # D0bar MagDown
     if options.polarity == "down":
         frac = RooRealVar("frac_D0bar_down", "frac_D0bar_down", parameters[3])
-        frac2 = RooRealVar("frac_D0bar_down_2", "frac_D0bar_down_2", parameters[19])
+        frac2 = RooRealVar("frac_D0bar_down_2", "frac_D0bar_down_2", parameters[18])
         Nsig = RooRealVar("Nbkg_D0_up", "Nbkg_D0_up", parameters[9])
         Nbkg = RooRealVar("Nbkg_D0_down", "Nbkg_D0_down", parameters[10])
-        Nsig_error = parameters[29]
+        Nsig_error = parameters[28]
     # D0bar MagUp
     elif options.polarity == "up":
         frac = RooRealVar("frac_D0bar_up", "frac_D0bar_up", parameters[4])
-        frac2 = RooRealVar("frac_D0bar_up_2", "frac_D0bar_up_2", parameters[20])
+        frac2 = RooRealVar("frac_D0bar_up_2", "frac_D0bar_up_2", parameters[19])
         Nsig = RooRealVar("Nbkg_D0_up", "Nbkg_D0_up", parameters[11])
         Nbkg = RooRealVar("Nbkg_D0_down", "Nbkg_D0_down", parameters[12])
-        Nsig_error = parameters[30]
+        Nsig_error = parameters[29]
 
 
 
-signal = RooAddPdf("signal", "signal", RooArgList(Johnson, Bifurgauss, Bifurgauss2), RooArgList(frac, frac2))
+signal = RooAddPdf("signal", "signal", RooArgList(Bifurgauss, gauss, Johnson), RooArgList(frac, frac2))
 model = {
     "total": RooAddPdf("total", "Total", RooArgList(signal, background), RooArgList(Nsig, Nbkg)), # extended likelihood
     "signals": {
         Bifurgauss.GetName(): Bifurgauss.GetTitle(),
-        Bifurgauss2.GetName(): Bifurgauss2.GetTitle(),
+        gauss.GetName(): gauss.GetTitle(),
         Johnson.GetName(): Johnson.GetTitle(),
     },
     "backgrounds": {
@@ -636,6 +631,6 @@ if binned:
         
         
 
-#print(ttree.GetEntries())
+print(ttree.GetEntries())
 gc.collect()
 exit()

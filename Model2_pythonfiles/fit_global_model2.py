@@ -207,41 +207,40 @@ if isinstance(size_value, int):
 D0_M = ROOT.RooRealVar("D0_MM", "D0 mass / [MeV/c*c]", 1815, 1910)
 
 # Johnson SU Distribution
-Jmu = RooRealVar("Jmu", "Jmu", 1.8665e+03, 1860, 1870)
-Jlam = RooRealVar("Jlam", "Jlam", 1.7441e+01, 10, 20)
-Jgam = RooRealVar("Jgam", "Jgam", 2.6381e-01, 0, 10)
-Jdel = RooRealVar("Jdel", "Jdel", 1.6214e+00, 0, 10)
+Jmu = RooRealVar("Jmu", "Jmu", 1865, 1860, 1870)
+Jlam = RooRealVar("Jlam", "Jlam", 18.7, 10, 20)
+Jgam = RooRealVar("Jgam", "Jgam", 0.36, 0, 10)
+Jdel = RooRealVar("Jdel", "Jdel", 1.55, 0, 10)
 Johnson = RooJohnson("Johnson","Johnson", D0_M, Jmu, Jlam, Jgam, Jdel)
 
 # Bifurcated Gaussian
-bifurmean = RooRealVar("bifurmean", "bifurmean", 1.8652e+03, 1860, 1870)
-sigmaL =  RooRealVar("sigmaL", "sigmaL", 7.9016e+00, 0, 10)
-sigmaR = RooRealVar("sigmaR", "sigmaR", 6.1889e+00, 0, 10)
-bifurgauss = RooBifurGauss("Bifurgauss1", "Bifurgauss1", D0_M, bifurmean, sigmaL, sigmaR)
+bifurmean = RooRealVar("bifurmean", "bifurmean", 1865.2, 1860, 1870)
+sigmaL =  RooRealVar("sigmaL", "sigmaL", 8.24, 0, 10)
+sigmaR = RooRealVar("sigmaR", "sigmaR", 6.1, 0, 10)
+bifurgauss = RooBifurGauss("Bifurgauss", "Bifurgauss", D0_M, bifurmean, sigmaL, sigmaR)
 
-# Bifurcated Gaussian 
-bifurmean2 = RooRealVar("bifurmean2", "bifurmean2", 1.8657e+03, 1860, 1870)
-sigmaL2 =  RooRealVar("sigmaL2", "sigmaL2", 5.9369e+00, 0, 10)
-sigmaR2 = RooRealVar("sigmaR2", "sigmaR2", 8.5516e+00, 0, 10)
-bifurgauss2 = RooBifurGauss("Bifurgaussian2", "Bifurgaussian2", D0_M, bifurmean2, sigmaL2, sigmaR2)
+# Model Gaussian
+mean = RooRealVar("mean", "mean", 1865, 1850, 1880)
+sigma = RooRealVar("sigma", "sigma", 7.37, 0, 20)
+gaussian = RooGaussian("gauss", "gauss", D0_M, mean, sigma)
 
 # Model Exponential Background
-a0 = RooRealVar("a0", "a0", -0.0092, -0.0097, -0.0090)
+a0 = RooRealVar("a0", "a0", -0.009, -1, 0)
 background = RooExponential("exponential", "exponential", D0_M, a0)
 
 # Ratio of signal intensities between each model. For N PDFs need N-1 fractions 
 # DO MagUp
-frac_D0_up = RooRealVar("frac_D0_up", "frac_D0_up", 0.16, 0, 1)
-frac_D0_up_2 = RooRealVar("frac_D0_up_2", "frac_D0_up_2", 0.4, 0, 1)
+frac_D0_up = RooRealVar("frac_D0_up", "frac_D0_up", 0.44, 0, 1) 
+frac_D0_up_2 = RooRealVar("frac_D0_up_2", "frac_D0_up_2", 0.42, 0, 1) 
 # D0 MagDown
-frac_D0_down = RooRealVar("frac_D0_down", "frac_D0_down", 0.2, 0, 1)
-frac_D0_down_2 = RooRealVar("frac_D0_down_2", "frac_D0_down_2", 0.48, 0, 1)
+frac_D0_down = RooRealVar("frac_D0_down", "frac_D0_down", 0.38, 0, 1) 
+frac_D0_down_2 = RooRealVar("frac_D0_down_2", "frac_D0_down_2", 0.46, 0, 1) 
 # D0bar MagUp2
-frac_D0bar_up = RooRealVar("frac_D0bar_up", "frac_D0bar_up", 0.16, 0, 1)
-frac_D0bar_up_2 = RooRealVar("frac_D0bar_up_2", "frac_D0bar_up_2", 0.4, 0, 1)
+frac_D0bar_up = RooRealVar("frac_D0bar_up", "frac_D0bar_up", 0.46, 0, 1) 
+frac_D0bar_up_2 = RooRealVar("frac_D0bar_up_2", "frac_D0bar_up_2", 0.42, 0, 1) 
 # D0bar MagDown
-frac_D0bar_down = RooRealVar("frac_D0bar_down", "frac_D0bar_down", 0.16, 0, 1)
-frac_D0bar_down_2 = RooRealVar("frac_D0bar_down_2", "frac_D0bar_down_2", 0.46, 0, 1)
+frac_D0bar_down = RooRealVar("frac_D0bar_down", "frac_D0bar_down", 0.38, 0, 1) 
+frac_D0bar_down_2 = RooRealVar("frac_D0bar_down_2", "frac_D0bar_down_2", 0.47, 0, 1) 
 
 # Generate normalisation variables
 Nsig_D0_up = ROOT.RooRealVar("Nsig_D0_up", "Nsig_D0_up", 0.95*ttree_D0_up.GetEntries(), 0, ttree_D0_up.GetEntries())
@@ -283,28 +282,28 @@ if binned:
 
     # Model Signal for D0 MagUp
     binned_sample.defineType("Binned_D0_up_sample")
-    signal_D0_up = RooAddPdf("signal_D0_up", "signal D0 up", RooArgList(Johnson, bifurgauss, bifurgauss2), RooArgList(frac_D0_up, frac_D0_up_2))
+    signal_D0_up = RooAddPdf("signal_D0_up", "signal D0 up", RooArgList(bifurgauss, gaussian, Johnson), RooArgList(frac_D0_up, frac_D0_up_2))
     # Generate model for D0 MagUp
     model_D0_up = RooAddPdf("model_D0_up", "model D0 up", [signal_D0_up, background], [Nsig_D0_up, Nbkg_D0_up])
     simultaneous_pdf.addPdf(model_D0_up, "Binned_D0_up_sample")
     
     # Model Signal for D0 MagDown
     binned_sample.defineType("Binned_D0_down_sample")
-    signal_D0_down = RooAddPdf("signal_D0_down", "signal D0 down", RooArgList(Johnson, bifurgauss, bifurgauss2), RooArgList(frac_D0_down, frac_D0_down_2))
+    signal_D0_down = RooAddPdf("signal_D0_down", "signal D0 down", RooArgList(bifurgauss, gaussian, Johnson), RooArgList(frac_D0_down, frac_D0_down_2))
     # Generate model for D0 MagDown
     model_D0_down = RooAddPdf("model_D0_down", "model D0 down", [signal_D0_down, background], [Nsig_D0_down, Nbkg_D0_down])
     simultaneous_pdf.addPdf(model_D0_down, "Binned_D0_down_sample")
 
     # Model Signal for D0bar MagUp
     binned_sample.defineType("Binned_D0bar_up_sample")
-    signal_D0bar_up = RooAddPdf("signal_D0bar_up", "signal D0bar up", RooArgList(Johnson, bifurgauss, bifurgauss2), RooArgList(frac_D0bar_up, frac_D0bar_up_2))
+    signal_D0bar_up = RooAddPdf("signal_D0bar_up", "signal D0bar up", RooArgList(bifurgauss, gaussian, Johnson), RooArgList(frac_D0bar_up, frac_D0bar_up_2))
     # Generate model for D0bar MagUp
     model_D0bar_up = RooAddPdf("model_D0bar_up", "model D0bar up", [signal_D0bar_up, background], [Nsig_D0bar_up, Nbkg_D0bar_up])
     simultaneous_pdf.addPdf(model_D0bar_up, "Binned_D0bar_up_sample")
 
     # Model Signal for D0bar MagDown
     binned_sample.defineType("Binned_D0bar_down_sample")
-    signal_D0bar_down = RooAddPdf("signal_D0bar_down", "signal D0bar down", RooArgList(Johnson, bifurgauss, bifurgauss2), RooArgList(frac_D0bar_down, frac_D0bar_down_2))
+    signal_D0bar_down = RooAddPdf("signal_D0bar_down", "signal D0bar down", RooArgList(bifurgauss, gaussian, Johnson), RooArgList(frac_D0bar_down, frac_D0bar_down_2))
     # Generate model for D0bar MagDown
     model_D0bar_down = RooAddPdf("model_D0bar_down", "model D0bar down", [signal_D0bar_down, background], [Nsig_D0bar_down, Nbkg_D0bar_down])
     simultaneous_pdf.addPdf(model_D0bar_down, "Binned_D0bar_down_sample")
@@ -314,14 +313,14 @@ if binned:
     simultaneous_data = RooDataHist("simultaneous_data", "simultaneous data", RooArgList(D0_M), ROOT.RooFit.Index(binned_sample), *imports)
 
     # Performs the simultaneous fit
-    #enableBinIntegrator(model_D0_down, numbins)
+    #enableBinIntegrator(simultaneous_data, numbins)
     fitResult = simultaneous_pdf.fitTo(simultaneous_data, IntegrateBins = 1e-3, PrintLevel=-1, Save=True, Extended=True)
-    #disableBinIntegrator(model_D0_down)
+    #disableBinIntegrator(simultaneous_data)
 
 # Prints the simultaneous fit parameters
 fitResult.Print()
 
 # Get results
-parameters = np.array([a0.getValV(), frac_D0_down.getValV(), frac_D0_up.getValV(), frac_D0bar_down.getValV(), frac_D0bar_up.getValV(), Nsig_D0_down.getValV(), Nbkg_D0_down.getValV(), Nsig_D0_up.getValV(), Nbkg_D0_up.getValV(), Nsig_D0bar_down.getValV(), Nbkg_D0bar_down.getValV(), Nsig_D0bar_up.getValV(), Nbkg_D0bar_up.getValV(), sigmaL.getValV(), sigmaR.getValV(), sigmaL2.getValV(), sigmaR2.getValV(), frac_D0_down_2.getValV(), frac_D0_up_2.getValV(), frac_D0bar_down_2.getValV(), frac_D0bar_up_2.getValV(), Jmu.getValV(), Jlam.getValV(), Jgam.getValV(), Jdel.getValV(), bifurmean.getValV(), bifurmean2.getValV(),  Nsig_D0_down.getError(), Nsig_D0_up.getError(), Nsig_D0bar_down.getError(), Nsig_D0bar_up.getError()])
+parameters = np.array([a0.getValV(), frac_D0_down.getValV(), frac_D0_up.getValV(), frac_D0bar_down.getValV(), frac_D0bar_up.getValV(), Nsig_D0_down.getValV(), Nbkg_D0_down.getValV(), Nsig_D0_up.getValV(), Nbkg_D0_up.getValV(), Nsig_D0bar_down.getValV(), Nbkg_D0bar_down.getValV(), Nsig_D0bar_up.getValV(), Nbkg_D0bar_up.getValV(), sigmaL.getValV(), sigmaR.getValV(),  sigma.getValV(), frac_D0_down_2.getValV(), frac_D0_up_2.getValV(), frac_D0bar_down_2.getValV(), frac_D0bar_up_2.getValV(), Jmu.getValV(), Jlam.getValV(), Jgam.getValV(), Jdel.getValV(), bifurmean.getValV(), mean.getValV(),  Nsig_D0_down.getError(), Nsig_D0_up.getError(), Nsig_D0bar_down.getError(), Nsig_D0bar_up.getError()])
 np.savetxt(f"{args.path}/fit_parameters.txt", parameters, delimiter=',')
 print("My program took", time.time() - start_time, "to run")

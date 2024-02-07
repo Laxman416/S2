@@ -1,5 +1,5 @@
 """
-fit_global.py
+fit_global_model3.py
 
 This code is used to perform a global fit on the selected data. In order to do so a simulatenous fit is done on the four datasets (with different mesons and polarities). This simulatenous fit keeps all variables constant across the four fits except for the normalisation constants which are allowed to vary independently. The model used consists of a Crystal Ball function and a Gaussian distribution to model the signal and an Exponential decay to model the background.
 The year of interest and size of the data to be analysed must be specified using the required flags --year --size. It is necessary to specify if the fit should be performed on the binned data or the unbinned data using the flag --binned_fit. There is a flag --path, which is not required. This one is used to specify the directory where the input data is located, and where the output file should be written. By default it is set to be the current working directory.
@@ -225,6 +225,11 @@ sigmaL2 =  RooRealVar("sigmaL2", "sigmaL2", 5.9369e+00, 0, 10)
 sigmaR2 = RooRealVar("sigmaR2", "sigmaR2", 8.5516e+00, 0, 10)
 bifurgauss2 = RooBifurGauss("Bifurgaussian2", "Bifurgaussian2", D0_M, bifurmean2, sigmaL2, sigmaR2)
 
+# Gaussian
+mean = RooRealVar("mean", "mean", 1865, 1860, 1870)
+sigma = RooRealVar("sigma", "sigma", 7.37, 0, 20)
+gauss = RooGaussian("Gaussian", "Gaussian", D0_M, mean, sigma)
+
 # Model Exponential Background
 a0 = RooRealVar("a0", "a0", -0.0092, -0.0097, -0.0090)
 background = RooExponential("exponential", "exponential", D0_M, a0)
@@ -232,16 +237,23 @@ background = RooExponential("exponential", "exponential", D0_M, a0)
 # Ratio of signal intensities between each model. For N PDFs need N-1 fractions 
 # DO MagUp
 frac_D0_up = RooRealVar("frac_D0_up", "frac_D0_up", 0.16, 0, 1)
-frac_D0_up_2 = RooRealVar("frac_D0_up_2", "frac_D0_up_2", 0.4, 0, 1)
+frac_D0_up_2 = RooRealVar("frac_D0_up_2", "frac_D0_up_2", 0.3, 0, 1)
+frac_D0_up_3 = RooRealVar("frac_D0_up_3", "frac_D0_up_3", 0.4, 0, 1)
+
 # D0 MagDown
-frac_D0_down = RooRealVar("frac_D0_down", "frac_D0_down", 0.2, 0, 1)
-frac_D0_down_2 = RooRealVar("frac_D0_down_2", "frac_D0_down_2", 0.48, 0, 1)
+frac_D0_down = RooRealVar("frac_D0_down", "frac_D0_down", 1.8830e-01, 0, 1)
+frac_D0_down_2 = RooRealVar("frac_D0_down_2", "frac_D0_down_2", 3.8093e-01, 0, 1)
+frac_D0_down_3 = RooRealVar("frac_D0_down_3", "frac_D0_down_3", 3.6871e-01, 0, 1)
+
 # D0bar MagUp2
 frac_D0bar_up = RooRealVar("frac_D0bar_up", "frac_D0bar_up", 0.16, 0, 1)
-frac_D0bar_up_2 = RooRealVar("frac_D0bar_up_2", "frac_D0bar_up_2", 0.4, 0, 1)
+frac_D0bar_up_2 = RooRealVar("frac_D0bar_up_2", "frac_D0bar_up_2", 0.3, 0, 1)
+frac_D0bar_up_3 = RooRealVar("frac_D0bar_up_3", "frac_D0bar_up_3", 0.4, 0, 1)
+
 # D0bar MagDown
 frac_D0bar_down = RooRealVar("frac_D0bar_down", "frac_D0bar_down", 0.16, 0, 1)
-frac_D0bar_down_2 = RooRealVar("frac_D0bar_down_2", "frac_D0bar_down_2", 0.46, 0, 1)
+frac_D0bar_down_2 = RooRealVar("frac_D0bar_down_2", "frac_D0bar_down_2", 0.36, 0, 1)
+frac_D0bar_down_3 = RooRealVar("frac_D0bar_down_3", "frac_D0bar_down_3", 0.40, 0, 1)
 
 # Generate normalisation variables
 Nsig_D0_up = ROOT.RooRealVar("Nsig_D0_up", "Nsig_D0_up", 0.95*ttree_D0_up.GetEntries(), 0, ttree_D0_up.GetEntries())
@@ -283,28 +295,28 @@ if binned:
 
     # Model Signal for D0 MagUp
     binned_sample.defineType("Binned_D0_up_sample")
-    signal_D0_up = RooAddPdf("signal_D0_up", "signal D0 up", RooArgList(Johnson, bifurgauss, bifurgauss2), RooArgList(frac_D0_up, frac_D0_up_2))
+    signal_D0_up = RooAddPdf("signal_D0_up", "signal D0 up", RooArgList(Johnson, bifurgauss, bifurgauss2, gauss), RooArgList(frac_D0_up, frac_D0_up_2, frac_D0_up_3))
     # Generate model for D0 MagUp
     model_D0_up = RooAddPdf("model_D0_up", "model D0 up", [signal_D0_up, background], [Nsig_D0_up, Nbkg_D0_up])
     simultaneous_pdf.addPdf(model_D0_up, "Binned_D0_up_sample")
     
     # Model Signal for D0 MagDown
     binned_sample.defineType("Binned_D0_down_sample")
-    signal_D0_down = RooAddPdf("signal_D0_down", "signal D0 down", RooArgList(Johnson, bifurgauss, bifurgauss2), RooArgList(frac_D0_down, frac_D0_down_2))
+    signal_D0_down = RooAddPdf("signal_D0_down", "signal D0 down", RooArgList(Johnson, bifurgauss, bifurgauss2, gauss), RooArgList(frac_D0_down, frac_D0_down_2, frac_D0_down_3))
     # Generate model for D0 MagDown
     model_D0_down = RooAddPdf("model_D0_down", "model D0 down", [signal_D0_down, background], [Nsig_D0_down, Nbkg_D0_down])
     simultaneous_pdf.addPdf(model_D0_down, "Binned_D0_down_sample")
 
     # Model Signal for D0bar MagUp
     binned_sample.defineType("Binned_D0bar_up_sample")
-    signal_D0bar_up = RooAddPdf("signal_D0bar_up", "signal D0bar up", RooArgList(Johnson, bifurgauss, bifurgauss2), RooArgList(frac_D0bar_up, frac_D0bar_up_2))
+    signal_D0bar_up = RooAddPdf("signal_D0bar_up", "signal D0bar up", RooArgList(Johnson, bifurgauss, bifurgauss2, gauss), RooArgList(frac_D0bar_up, frac_D0bar_up_2, frac_D0bar_up_3))
     # Generate model for D0bar MagUp
     model_D0bar_up = RooAddPdf("model_D0bar_up", "model D0bar up", [signal_D0bar_up, background], [Nsig_D0bar_up, Nbkg_D0bar_up])
     simultaneous_pdf.addPdf(model_D0bar_up, "Binned_D0bar_up_sample")
 
     # Model Signal for D0bar MagDown
     binned_sample.defineType("Binned_D0bar_down_sample")
-    signal_D0bar_down = RooAddPdf("signal_D0bar_down", "signal D0bar down", RooArgList(Johnson, bifurgauss, bifurgauss2), RooArgList(frac_D0bar_down, frac_D0bar_down_2))
+    signal_D0bar_down = RooAddPdf("signal_D0bar_down", "signal D0bar down", RooArgList(Johnson, bifurgauss, bifurgauss2, gauss), RooArgList(frac_D0bar_down, frac_D0bar_down_2, frac_D0bar_down_3))
     # Generate model for D0bar MagDown
     model_D0bar_down = RooAddPdf("model_D0bar_down", "model D0bar down", [signal_D0bar_down, background], [Nsig_D0bar_down, Nbkg_D0bar_down])
     simultaneous_pdf.addPdf(model_D0bar_down, "Binned_D0bar_down_sample")
@@ -315,13 +327,13 @@ if binned:
 
     # Performs the simultaneous fit
     #enableBinIntegrator(model_D0_down, numbins)
-    fitResult = simultaneous_pdf.fitTo(simultaneous_data, IntegrateBins = 1e-3, PrintLevel=-1, Save=True, Extended=True)
+    fitResult = simultaneous_pdf.fitTo(simultaneous_data, IntegrateBins = 1e-3, Save=True, Extended=True)
     #disableBinIntegrator(model_D0_down)
 
 # Prints the simultaneous fit parameters
 fitResult.Print()
 
 # Get results
-parameters = np.array([a0.getValV(), frac_D0_down.getValV(), frac_D0_up.getValV(), frac_D0bar_down.getValV(), frac_D0bar_up.getValV(), Nsig_D0_down.getValV(), Nbkg_D0_down.getValV(), Nsig_D0_up.getValV(), Nbkg_D0_up.getValV(), Nsig_D0bar_down.getValV(), Nbkg_D0bar_down.getValV(), Nsig_D0bar_up.getValV(), Nbkg_D0bar_up.getValV(), sigmaL.getValV(), sigmaR.getValV(), sigmaL2.getValV(), sigmaR2.getValV(), frac_D0_down_2.getValV(), frac_D0_up_2.getValV(), frac_D0bar_down_2.getValV(), frac_D0bar_up_2.getValV(), Jmu.getValV(), Jlam.getValV(), Jgam.getValV(), Jdel.getValV(), bifurmean.getValV(), bifurmean2.getValV(),  Nsig_D0_down.getError(), Nsig_D0_up.getError(), Nsig_D0bar_down.getError(), Nsig_D0bar_up.getError()])
+parameters = np.array([a0.getValV(), frac_D0_down.getValV(), frac_D0_up.getValV(), frac_D0bar_down.getValV(), frac_D0bar_up.getValV(), Nsig_D0_down.getValV(), Nbkg_D0_down.getValV(), Nsig_D0_up.getValV(), Nbkg_D0_up.getValV(), Nsig_D0bar_down.getValV(), Nbkg_D0bar_down.getValV(), Nsig_D0bar_up.getValV(), Nbkg_D0bar_up.getValV(), sigmaL.getValV(), sigmaR.getValV(), sigmaL2.getValV(), sigmaR2.getValV(), frac_D0_down_2.getValV(), frac_D0_up_2.getValV(), frac_D0bar_down_2.getValV(), frac_D0bar_up_2.getValV(), Jmu.getValV(), Jlam.getValV(), Jgam.getValV(), Jdel.getValV(), bifurmean.getValV(), bifurmean2.getValV(),  Nsig_D0_down.getError(), Nsig_D0_up.getError(), Nsig_D0bar_down.getError(), Nsig_D0bar_up.getError(), mean.getValV(), sigma.getValV(), frac_D0_down_2.getValV(), frac_D0_up_2.getValV(), frac_D0bar_down_2.getValV(), frac_D0bar_up_2.getValV()])
 np.savetxt(f"{args.path}/fit_parameters.txt", parameters, delimiter=',')
 print("My program took", time.time() - start_time, "to run")
