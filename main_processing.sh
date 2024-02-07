@@ -55,7 +55,7 @@ fi
 # Saves all years in one folder
 while [ $size -ge $minsize ]; do
     echo "Inside the loop. Size: $size"
-    for year in 16; do 
+    for year in 16 17 18; do 
         echo "Year" $year
         python selection_of_events.py --year $year --size $size --path "/eos/lhcb/user/l/lseelan/"$directory"/selected_data"
 
