@@ -1,6 +1,9 @@
 """
 fit_global.py
 
+Bifurcated Bifurcated Johnson
+
+Last Semester's Model
 This code is used to perform a global fit on the selected data. In order to do so a simulatenous fit is done on the four datasets (with different mesons and polarities). This simulatenous fit keeps all variables constant across the four fits except for the normalisation constants which are allowed to vary independently. The model used consists of a Crystal Ball function and a Gaussian distribution to model the signal and an Exponential decay to model the background.
 The year of interest and size of the data to be analysed must be specified using the required flags --year --size. It is necessary to specify if the fit should be performed on the binned data or the unbinned data using the flag --binned_fit. There is a flag --path, which is not required. This one is used to specify the directory where the input data is located, and where the output file should be written. By default it is set to be the current working directory.
 It outputs the value of the constants shared in the simultaneous fit to a text file. This code is heavily inspired by Marc Oriol Pérez (marc.oriolperez@student.manchester.ac.uk), however it has been redesigned so that the binned fit is succesfully performed.
