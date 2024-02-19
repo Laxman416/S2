@@ -210,51 +210,53 @@ D0_M = ROOT.RooRealVar("D0_MM", "D0 mass / [MeV/c*c]", 1815, 1910)
 
 # Johnson SU Distribution
 Jmu = RooRealVar("Jmu", "Jmu", 1.8665e+03, 1860, 1870)
-Jlam = RooRealVar("Jlam", "Jlam", 1.7441e+01, 10, 20)
-Jgam = RooRealVar("Jgam", "Jgam", 2.6381e-01, 0, 10)
-Jdel = RooRealVar("Jdel", "Jdel", 1.6214e+00, 0, 10)
+Jlam = RooRealVar("Jlam", "Jlam", 1.8441e+01, 10, 20)
+Jgam = RooRealVar("Jgam", "Jgam", 3.2381e-01, 0, 10)
+Jdel = RooRealVar("Jdel", "Jdel", 1.6614e+00, 0, 10)
 Johnson = RooJohnson("Johnson","Johnson", D0_M, Jmu, Jlam, Jgam, Jdel)
 
 # Bifurcated Gaussian
-bifurmean = RooRealVar("bifurmean", "bifurmean", 1.8652e+03, 1860, 1870)
-sigmaL =  RooRealVar("sigmaL", "sigmaL", 7.9016e+00, 0, 10)
-sigmaR = RooRealVar("sigmaR", "sigmaR", 6.1889e+00, 0, 10)
-bifurgauss = RooBifurGauss("Bifurgauss1", "Bifurgauss1", D0_M, bifurmean, sigmaL, sigmaR)
+mean = RooRealVar("mean", "mean", 1865, 1860, 1870)
+sigmaL =  RooRealVar("sigmaL", "sigmaL", 8.25016e+00, 0, 10)
+sigmaR = RooRealVar("sigmaR", "sigmaR", 5.9289e+00, 0, 10)
+bifurgauss = RooBifurGauss("Bifurgauss1", "Bifurgauss1", D0_M, mean, sigmaL, sigmaR)
 
 # Bifurcated Gaussian 
-bifurmean2 = RooRealVar("bifurmean2", "bifurmean2", 1.8657e+03, 1860, 1870)
-sigmaL2 =  RooRealVar("sigmaL2", "sigmaL2", 5.9369e+00, 0, 10)
-sigmaR2 = RooRealVar("sigmaR2", "sigmaR2", 8.5516e+00, 0, 10)
-bifurgauss2 = RooBifurGauss("Bifurgaussian2", "Bifurgaussian2", D0_M, bifurmean2, sigmaL2, sigmaR2)
+sigmaL2 =  RooRealVar("sigmaL2", "sigmaL2", 5.8769e+00, 0, 10)
+sigmaR2 = RooRealVar("sigmaR2", "sigmaR2", 8.8516e+00, 0, 10)
+bifurgauss2 = RooBifurGauss("Bifurgaussian2", "Bifurgaussian2", D0_M, mean, sigmaL2, sigmaR2)
 
 # Gaussian
-mean = RooRealVar("mean", "mean", 1865, 1860, 1870)
-sigma = RooRealVar("sigma", "sigma", 7.37, 0, 20)
+sigma = RooRealVar("sigma", "sigma", 7, 0, 20)
 gauss = RooGaussian("Gaussian", "Gaussian", D0_M, mean, sigma)
 
 # Model Exponential Background
-a0 = RooRealVar("a0", "a0", -0.0092, -0.0097, -0.0090)
+a0 = RooRealVar("a0", "a0", -0.0090, -0.0097, -0.0086)
 background = RooExponential("exponential", "exponential", D0_M, a0)
 
 # Ratio of signal intensities between each model. For N PDFs need N-1 fractions 
-# DO MagUp
-frac_D0_up = RooRealVar("frac_D0_up", "frac_D0_up", 0.16, 0, 1)
-frac_D0_up_2 = RooRealVar("frac_D0_up_2", "frac_D0_up_2", 0.3, 0, 1)
-frac_D0_up_3 = RooRealVar("frac_D0_up_3", "frac_D0_up_3", 0.4, 0, 1)
 
 # D0 MagDown
-frac_D0_down = RooRealVar("frac_D0_down", "frac_D0_down", 1.9075e-01, 0, 1)
-frac_D0_down_2 = RooRealVar("frac_D0_down_2", "frac_D0_down_2", 2.2488e-01, 0, 1)
-frac_D0_down_3 = RooRealVar("frac_D0_down_3", "frac_D0_down_3", 3.0413e-01, 0, 1)
-# D0bar MagUp2
-frac_D0bar_up = RooRealVar("frac_D0bar_up", "frac_D0bar_up", 0.16, 0, 1)
-frac_D0bar_up_2 = RooRealVar("frac_D0bar_up_2", "frac_D0bar_up_2", 0.3, 0, 1)
-frac_D0bar_up_3 = RooRealVar("frac_D0bar_up_3", "frac_D0bar_up_3", 0.4, 0, 1)
+frac_D0_down = RooRealVar("frac_D0_down", "frac_D0_down", 1.7875e-01, 0, 1)
+frac_D0_down_2 = RooRealVar("frac_D0_down_2", "frac_D0_down_2", 4.088e-01, 0, 1)
+frac_D0_down_3 = RooRealVar("frac_D0_down_3", "frac_D0_down_3", 3.23413e-01, 0, 1)
+
+# DO MagUp
+frac_D0_up = RooRealVar("frac_D0_up", "frac_D0_up", 0.18, 0, 1)
+frac_D0_up_2 = RooRealVar("frac_D0_up_2", "frac_D0_up_2", 0.32, 0, 1)
+frac_D0_up_3 = RooRealVar("frac_D0_up_3", "frac_D0_up_3", 0.33, 0, 1)
 
 # D0bar MagDown
-frac_D0bar_down = RooRealVar("frac_D0bar_down", "frac_D0bar_down", 0.16, 0, 1)
-frac_D0bar_down_2 = RooRealVar("frac_D0bar_down_2", "frac_D0bar_down_2", 0.36, 0, 1)
-frac_D0bar_down_3 = RooRealVar("frac_D0bar_down_3", "frac_D0bar_down_3", 0.40, 0, 1)
+frac_D0bar_down = RooRealVar("frac_D0bar_down", "frac_D0bar_down", 0.18, 0, 1)
+frac_D0bar_down_2 = RooRealVar("frac_D0bar_down_2", "frac_D0bar_down_2", 0.4, 0, 1)
+frac_D0bar_down_3 = RooRealVar("frac_D0bar_down_3", "frac_D0bar_down_3", 0.31, 0, 1)
+
+# D0bar MagUp2
+frac_D0bar_up = RooRealVar("frac_D0bar_up", "frac_D0bar_up", 0.18, 0, 1)
+frac_D0bar_up_2 = RooRealVar("frac_D0bar_up_2", "frac_D0bar_up_2", 0.3, 0, 1)
+frac_D0bar_up_3 = RooRealVar("frac_D0bar_up_3", "frac_D0bar_up_3", 0.34, 0, 1)
+
+
 
 # Generate normalisation variables
 Nsig_D0_up = ROOT.RooRealVar("Nsig_D0_up", "Nsig_D0_up", 0.95*ttree_D0_up.GetEntries(), 0, ttree_D0_up.GetEntries())
@@ -335,6 +337,6 @@ if binned:
 fitResult.Print()
 
 # Get results
-parameters = np.array([a0.getValV(), frac_D0_down.getValV(), frac_D0_up.getValV(), frac_D0bar_down.getValV(), frac_D0bar_up.getValV(), Nsig_D0_down.getValV(), Nbkg_D0_down.getValV(), Nsig_D0_up.getValV(), Nbkg_D0_up.getValV(), Nsig_D0bar_down.getValV(), Nbkg_D0bar_down.getValV(), Nsig_D0bar_up.getValV(), Nbkg_D0bar_up.getValV(), sigmaL.getValV(), sigmaR.getValV(), sigmaL2.getValV(), sigmaR2.getValV(), frac_D0_down_2.getValV(), frac_D0_up_2.getValV(), frac_D0bar_down_2.getValV(), frac_D0bar_up_2.getValV(), Jmu.getValV(), Jlam.getValV(), Jgam.getValV(), Jdel.getValV(), bifurmean.getValV(), bifurmean2.getValV(),  Nsig_D0_down.getError(), Nsig_D0_up.getError(), Nsig_D0bar_down.getError(), Nsig_D0bar_up.getError(), mean.getValV(), sigma.getValV(), frac_D0_down_3.getValV(), frac_D0_up_3.getValV(), frac_D0bar_down_3.getValV(), frac_D0bar_up_3.getValV()])
+parameters = np.array([a0.getValV(), frac_D0_down.getValV(), frac_D0_up.getValV(), frac_D0bar_down.getValV(), frac_D0bar_up.getValV(), Nsig_D0_down.getValV(), Nbkg_D0_down.getValV(), Nsig_D0_up.getValV(), Nbkg_D0_up.getValV(), Nsig_D0bar_down.getValV(), Nbkg_D0bar_down.getValV(), Nsig_D0bar_up.getValV(), Nbkg_D0bar_up.getValV(), sigmaL.getValV(), sigmaR.getValV(), sigmaL2.getValV(), sigmaR2.getValV(), frac_D0_down_2.getValV(), frac_D0_up_2.getValV(), frac_D0bar_down_2.getValV(), frac_D0bar_up_2.getValV(), Jmu.getValV(), Jlam.getValV(), Jgam.getValV(), Jdel.getValV(),  Nsig_D0_down.getError(), Nsig_D0_up.getError(), Nsig_D0bar_down.getError(), Nsig_D0bar_up.getError(), mean.getValV(), sigma.getValV(), frac_D0_down_3.getValV(), frac_D0_up_3.getValV(), frac_D0bar_down_3.getValV(), frac_D0bar_up_3.getValV()])
 np.savetxt(f"{args.path}/fit_parameters.txt", parameters, delimiter=',')
 print("My program took", time.time() - start_time, "to run")
