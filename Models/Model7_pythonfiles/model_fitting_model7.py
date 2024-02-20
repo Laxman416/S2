@@ -233,7 +233,7 @@ D0_M = RooRealVar("D0_MM", f"D0 mass / [MeVc^{-2}]", 1815, 1910) # Data - invari
 # #Model 1
 # Define variables for signal model, using the best fit parameters generated from fit_global.py
 # Model Bifurcated Gaussian
-bifurmean = RooRealVar("bifurmean", "bifurmean", parameters_dict["bifurmean"])
+bifurmean = RooRealVar("bifurmean", "bifurmean", parameters_dict["mean"])
 sigmaL = RooRealVar("sigmaL", "sigmaL", parameters_dict["sigmaL"])
 sigmaR = RooRealVar("sigmaR", "sigmaR", parameters_dict["sigmaR"])
 Bifurgauss = RooBifurGauss("Bifurgauss", "Bifurgauss", D0_M, bifurmean, sigmaL, sigmaR)

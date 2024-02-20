@@ -221,7 +221,8 @@ sigmaL =  RooRealVar("sigmaL", "sigmaL", 8.24, 0, 10)
 sigmaR = RooRealVar("sigmaR", "sigmaR", 6.1, 0, 10)
 bifurgauss = RooBifurGauss("Bifurgauss", "Bifurgauss", D0_M, bifurmean, sigmaL, sigmaR)
 
-# Model Gaussian
+# Model Gaussians
+
 mean = RooRealVar("mean", "mean", 1865, 1850, 1880)
 sigma = RooRealVar("sigma", "sigma", 7.37, 0, 20)
 gaussian = RooGaussian("gauss", "gauss", D0_M, mean, sigma)
@@ -323,6 +324,21 @@ if binned:
 fitResult.Print()
 
 # Get results
-parameters = np.array([a0.getValV(), frac_D0_down.getValV(), frac_D0_up.getValV(), frac_D0bar_down.getValV(), frac_D0bar_up.getValV(), Nsig_D0_down.getValV(), Nbkg_D0_down.getValV(), Nsig_D0_up.getValV(), Nbkg_D0_up.getValV(), Nsig_D0bar_down.getValV(), Nbkg_D0bar_down.getValV(), Nsig_D0bar_up.getValV(), Nbkg_D0bar_up.getValV(), sigmaL.getValV(), sigmaR.getValV(),  sigma.getValV(), frac_D0_down_2.getValV(), frac_D0_up_2.getValV(), frac_D0bar_down_2.getValV(), frac_D0bar_up_2.getValV(), Jmu.getValV(), Jlam.getValV(), Jgam.getValV(), Jdel.getValV(), bifurmean.getValV(), mean.getValV(),  Nsig_D0_down.getError(), Nsig_D0_up.getError(), Nsig_D0bar_down.getError(), Nsig_D0bar_up.getError()])
-np.savetxt(f"{args.path}/fit_parameters.txt", parameters, delimiter=',')
+#parameters = np.array([a0.getValV(), frac_D0_down.getValV(), frac_D0_up.getValV(), frac_D0bar_down.getValV(), frac_D0bar_up.getValV(), Nsig_D0_down.getValV(), Nbkg_D0_down.getValV(), Nsig_D0_up.getValV(), Nbkg_D0_up.getValV(), Nsig_D0bar_down.getValV(), Nbkg_D0bar_down.getValV(), Nsig_D0bar_up.getValV(), Nbkg_D0bar_up.getValV(), sigmaL.getValV(), sigmaR.getValV(),  sigma.getValV(), frac_D0_down_2.getValV(), frac_D0_up_2.getValV(), frac_D0bar_down_2.getValV(), frac_D0bar_up_2.getValV(), Jmu.getValV(), Jlam.getValV(), Jgam.getValV(), Jdel.getValV(), bifurmean.getValV(), mean.getValV(),  Nsig_D0_down.getError(), Nsig_D0_up.getError(), Nsig_D0bar_down.getError(), Nsig_D0bar_up.getError()])
+
+variables = [a0, frac_D0_down, frac_D0_down_2, frac_D0_up, frac_D0_up_2, frac_D0bar_down, frac_D0bar_down_2, frac_D0bar_up, frac_D0bar_up_2, Nsig_D0_down, Nbkg_D0_down, Nsig_D0_up, Nbkg_D0_up, Nsig_D0bar_down, Nbkg_D0bar_down, Nsig_D0bar_up, Nbkg_D0bar_up, sigmaL, sigmaR, Jmu, Jlam, Jgam, Jdel, mean, sigma, bifurmean]
+values = [var.getValV() for var in variables]
+errors = [var.getError() for var in variables]
+names = [var.GetName() for var in variables]
+
+# Create a dictionary with variable names and values
+parameters_dict = {name: value for name, value in zip(names, values)}
+
+# Save the dictionary to a text file
+with open(f"{args.path}/fit_parameters.txt", 'w') as file:
+    for key, value in parameters_dict.items():
+        file.write(f"{key}: {value}\n")
+    for name, error in zip(names, errors):
+        if name.startswith("Nsig_"):
+            file.write(f"{name}_error: {error}\n")
 print("My program took", time.time() - start_time, "to run")
