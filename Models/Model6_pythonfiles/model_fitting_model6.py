@@ -248,9 +248,8 @@ Jdel = RooRealVar("Jdel", "Jdel", parameters_dict["Jdel"])
 Johnson = RooJohnson("Johnson","Johnson", D0_M, Jmu, Jlam, Jgam, Jdel)
 
 # Model Bifurcated Gaussian
-sigmaL2 = RooRealVar("sigmaL2", "sigmaL2", parameters_dict["sigmaL2"])
-sigmaR2 = RooRealVar("sigmaR2", "sigmaR2", parameters_dict["sigmaR2"])
-Bifurgauss2 = RooBifurGauss("Bifurgauss2", "Bifurgauss2", D0_M, mean, sigmaL2, sigmaR2)
+sigma2 = RooRealVar("sigma2", "sigma2", parameters_dict["sigma2"])
+gauss2 = RooGaussian("Gaussian2", "Gaussian2", D0_M, mean, sigma2)
 
 # Model Exponential Background
 a0 = RooRealVar("a0", "a0", parameters_dict["a0"])
@@ -271,14 +270,14 @@ Nbkg = RooRealVar("Nbkg", "Nbkg", parameters_dict[f"Nbkg_{options.meson}_{option
 Nsig_error = parameters_dict[f"Nsig_{options.meson}_{options.polarity}_error"]
 
 
-signal = RooAddPdf("signal", "signal", RooArgList(Johnson, Bifurgauss, Bifurgauss2, gauss), RooArgList(frac, frac2, frac3))
+signal = RooAddPdf("signal", "signal", RooArgList(Johnson, Bifurgauss, gauss, gauss2), RooArgList(frac, frac2, frac3))
 model = {
     "total": RooAddPdf("total", "Total", RooArgList(signal, background), RooArgList(Nsig, Nbkg)), # extended likelihood
     "signals": {
         Bifurgauss.GetName(): Bifurgauss.GetTitle(),
-        Bifurgauss2.GetName(): Bifurgauss2.GetTitle(),
         Johnson.GetName(): Johnson.GetTitle(),
         gauss.GetName(): gauss.GetTitle(),
+        gauss2.GetName(): gauss2.GetTitle(),
 
     },
     "backgrounds": {
