@@ -6,34 +6,34 @@ model=$5
 
 
 mkdir $directory
-# mkdir $directory"/binned_data"
-# mkdir $directory"/binned_data/binning_scheme"
+mkdir $directory"/binned_data"
+mkdir $directory"/binned_data/binning_scheme"
 mkdir $directory"/model_fitting"
 mkdir $directory"/model_fitting/global"
 mkdir $directory"/model_fitting/local"
-# mkdir $directory"/model_fitting/pT"
-# mkdir $directory"/model_fitting/eta"
-# for ind in {0..99}
-# do
-#     index=$( printf '%02d' $ind)
-#     mkdir $directory"/model_fitting/local/"$index
-# done
-# for ind in {0..9}
-# do
-#     index=$( printf '%01d' $ind)
-#     mkdir $directory"/model_fitting/pT/"$index
-#     mkdir $directory"/model_fitting/eta/"$index
-# done
-# mkdir $directory"/raw_asymmetry_outcome"
-# mkdir $directory"/raw_asymmetry_outcome/chi_squared"
-# mkdir $directory"/raw_asymmetry_outcome/raw_asymmetry"
-# mkdir $directory"/raw_asymmetry_outcome/raw_asymmetry/pT"
-# mkdir $directory"/raw_asymmetry_outcome/raw_asymmetry/eta"
-# mkdir $directory"/raw_asymmetry_outcome/raw_asymmetry/local"
-# mkdir $directory"/results"
-# mkdir $directory"/binned_data/eta"
-# mkdir $directory"/binned_data/pT"
-# mkdir $directory"/binned_data/local"
+mkdir $directory"/model_fitting/pT"
+mkdir $directory"/model_fitting/eta"
+for ind in {0..99}
+do
+    index=$( printf '%02d' $ind)
+    mkdir $directory"/model_fitting/local/"$index
+done
+for ind in {0..9}
+do
+    index=$( printf '%01d' $ind)
+    mkdir $directory"/model_fitting/pT/"$index
+    mkdir $directory"/model_fitting/eta/"$index
+done
+mkdir $directory"/raw_asymmetry_outcome"
+mkdir $directory"/raw_asymmetry_outcome/chi_squared"
+mkdir $directory"/raw_asymmetry_outcome/raw_asymmetry"
+mkdir $directory"/raw_asymmetry_outcome/raw_asymmetry/pT"
+mkdir $directory"/raw_asymmetry_outcome/raw_asymmetry/eta"
+mkdir $directory"/raw_asymmetry_outcome/raw_asymmetry/local"
+mkdir $directory"/results"
+mkdir $directory"/binned_data/eta"
+mkdir $directory"/binned_data/pT"
+mkdir $directory"/binned_data/local"
 
 echo "The necessary directories have been created"
 echo
