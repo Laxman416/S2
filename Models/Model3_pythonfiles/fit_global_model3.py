@@ -210,44 +210,45 @@ D0_M = ROOT.RooRealVar("D0_MM", "D0 mass / [MeV/c*c]", 1815, 1910)
 
 # Johnson SU Distribution
 Jmu = RooRealVar("Jmu", "Jmu", 1.8665e+03, 1860, 1870)
-Jlam = RooRealVar("Jlam", "Jlam", 1.7441e+01, 10, 20)
-Jgam = RooRealVar("Jgam", "Jgam", 2.6381e-01, 0, 10)
-Jdel = RooRealVar("Jdel", "Jdel", 1.6214e+00, 0, 10)
+Jlam = RooRealVar("Jlam", "Jlam", 1.8041e+01, 10, 20)
+Jgam = RooRealVar("Jgam", "Jgam", 2.5381e-01, 0, 10)
+Jdel = RooRealVar("Jdel", "Jdel", 1.6014e+00, 0, 10)
 Johnson = RooJohnson("Johnson","Johnson", D0_M, Jmu, Jlam, Jgam, Jdel)
 
 # Bifurcated Gaussian
 bifurmean = RooRealVar("bifurmean", "bifurmean", 1.8652e+03, 1860, 1870)
-sigmaL =  RooRealVar("sigmaL", "sigmaL", 7.9016e+00, 0, 10)
-sigmaR = RooRealVar("sigmaR", "sigmaR", 6.1889e+00, 0, 10)
+sigmaL =  RooRealVar("sigmaL", "sigmaL", 8.2016e+00, 0, 10)
+sigmaR = RooRealVar("sigmaR", "sigmaR", 5.86889e+00, 0, 10)
 bifurgauss = RooBifurGauss("Bifurgauss1", "Bifurgauss1", D0_M, bifurmean, sigmaL, sigmaR)
 
 # Bifurcated Gaussian 
 bifurmean2 = RooRealVar("bifurmean2", "bifurmean2", 1.8657e+03, 1860, 1870)
-sigmaL2 =  RooRealVar("sigmaL2", "sigmaL2", 5.9369e+00, 0, 10)
+sigmaL2 =  RooRealVar("sigmaL2", "sigmaL2", 6.0369e+00, 0, 10)
 sigmaR2 = RooRealVar("sigmaR2", "sigmaR2", 8.5516e+00, 0, 10)
 bifurgauss2 = RooBifurGauss("Bifurgaussian2", "Bifurgaussian2", D0_M, bifurmean2, sigmaL2, sigmaR2)
 
 # Gaussian
 mean = RooRealVar("mean", "mean", 1865, 1860, 1870)
-sigma = RooRealVar("sigma", "sigma", 7.37, 0, 20)
+sigma = RooRealVar("sigma", "sigma", 7.13, 0, 20)
 gauss = RooGaussian("Gaussian", "Gaussian", D0_M, mean, sigma)
 
 # Model Exponential Background
-a0 = RooRealVar("a0", "a0", -0.0092, -0.0097, -0.0090)
+a0 = RooRealVar("a0", "a0", -0.0093, -0.0097, -0.0090)
+
 background = RooExponential("exponential", "exponential", D0_M, a0)
 
 # Ratio of signal intensities between each model. For N PDFs need N-1 fractions 
 # DO MagUp
-frac_D0_up = RooRealVar("frac_D0_up", "frac_D0_up", 0.16, 0, 1)
-frac_D0_up_2 = RooRealVar("frac_D0_up_2", "frac_D0_up_2", 0.3, 0, 1)
-frac_D0_up_3 = RooRealVar("frac_D0_up_3", "frac_D0_up_3", 0.4, 0, 1)
+frac_D0_up = RooRealVar("frac_D0_up", "frac_D0_up", 0.192, 0, 1)
+frac_D0_up_2 = RooRealVar("frac_D0_up_2", "frac_D0_up_2", 0.245, 0, 1)
+frac_D0_up_3 = RooRealVar("frac_D0_up_3", "frac_D0_up_3", 0.292, 0, 1)
 
 # D0 MagDown
 frac_D0_down = RooRealVar("frac_D0_down", "frac_D0_down", 1.9075e-01, 0, 1)
 frac_D0_down_2 = RooRealVar("frac_D0_down_2", "frac_D0_down_2", 2.2488e-01, 0, 1)
 frac_D0_down_3 = RooRealVar("frac_D0_down_3", "frac_D0_down_3", 3.0413e-01, 0, 1)
 # D0bar MagUp2
-frac_D0bar_up = RooRealVar("frac_D0bar_up", "frac_D0bar_up", 0.16, 0, 1)
+frac_D0bar_up = RooRealVar("frac_D0bar_up", "frac_D0bar_up", 0.1622, 0, 1)
 frac_D0bar_up_2 = RooRealVar("frac_D0bar_up_2", "frac_D0bar_up_2", 0.3, 0, 1)
 frac_D0bar_up_3 = RooRealVar("frac_D0bar_up_3", "frac_D0bar_up_3", 0.4, 0, 1)
 
@@ -263,7 +264,7 @@ Nbkg_D0_up = ROOT.RooRealVar("Nbkg_D0_up", "Nbkg_D0_up", 0.05*ttree_D0_up.GetEnt
 Nbkg_D0bar_up = ROOT.RooRealVar("Nbkg_D0bar_up", "Nbkg_D0bar_up", 0.05*ttree_D0bar_up.GetEntries(), 0, ttree_D0bar_up.GetEntries())
 Nsig_D0_down = ROOT.RooRealVar("Nsig_D0_down", "Nsig_D0_down", 0.95*ttree_D0_down.GetEntries(), 0, ttree_D0_down.GetEntries())
 Nsig_D0bar_down = ROOT.RooRealVar("Nsig_D0bar_down", "Nsig_D0bar_down", 0.95*ttree_D0bar_down.GetEntries(), 0, ttree_D0bar_down.GetEntries())
-Nbkg_D0_down = ROOT.RooRealVar("Nbkg_D0_down", "Nbkg_D0_down", 0.05*ttree_D0_down.GetEntries(), 0, ttree_D0_down.GetEntries())
+Nbkg_D0_down = ROOT.RooRealVar("Nbkg_D0_down", "Nbkg_D0_down", 1680496)#, 0, ttree_D0_down.GetEntries())
 Nbkg_D0bar_down = ROOT.RooRealVar("Nbkg_D0bar_down", "Nbkg_D0bar_down", 0.05*ttree_D0bar_down.GetEntries(), 0, ttree_D0bar_down.GetEntries())
 
 

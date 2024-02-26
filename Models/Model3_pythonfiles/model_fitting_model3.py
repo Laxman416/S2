@@ -252,7 +252,7 @@ Bifurgauss2 = RooBifurGauss("Bifurgauss2", "Bifurgauss2", D0_M, bifurmean2, sigm
 
 # Model Exponential Background
 a0 = RooRealVar("a0", "a0", parameters_dict["a0"])
-background = RooExponential("Exponential", "Exponential", D0_M, a0)
+background = RooExponential("Comb. Bkg", "Comb. Bkg", D0_M, a0)
 
 # Model Gaussian
 mean = RooRealVar("mean", "mean", parameters_dict["mean"])
