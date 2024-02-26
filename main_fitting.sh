@@ -42,7 +42,7 @@ echo
 
 ########### Model 
 echo "Fitting using Model "$model
-python "Models/Model"$model"_pythonfiles/fit_global_model"$model".py"  --year $year --size $size --path $directory"/model_fitting/global" --binned_fit $binned --input "/eos/lhcb/user/l/lseelan/Total/selected_data" --scheme "total"
+# python "Models/Model"$model"_pythonfiles/fit_global_model"$model".py"  --year $year --size $size --path $directory"/model_fitting/global" --binned_fit $binned --input "/eos/lhcb/user/l/lseelan/Total/selected_data" --scheme "total"
 for meson in D0 #D0bar
 do
     for polarity in down #up

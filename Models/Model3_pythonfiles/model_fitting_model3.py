@@ -225,12 +225,11 @@ with open(f"{options.parameters_path}/fit_parameters.txt", 'r') as file:
     for line in file:
         name, value = line.strip().split(': ')
         parameters_dict[name] = float(value)
-
 ttree.SetBranchStatus("*", 0)
 ttree.SetBranchStatus("D0_MM", 1)
 D0_M = RooRealVar("D0_MM", f"D0 mass / [MeVc^{-2}]", 1815, 1910) # Data - invariant mass
-
-#Model 1
+#print(parameters_dict)
+ #Model 1
 # Define variables for signal model, using the best fit parameters generated from fit_global.py
 # Model Bifurcated Gaussian
 bifurmean = RooRealVar("bifurmean", "bifurmean", parameters_dict["bifurmean"])
@@ -247,8 +246,8 @@ Johnson = RooJohnson("Johnson","Johnson", D0_M, Jmu, Jlam, Jgam, Jdel)
 
 # Model Bifurcated Gaussian
 bifurmean2 = RooRealVar("bifurmean2", "bifurmean2", parameters_dict["bifurmean2"])
-sigmaL2 = RooRealVar("sigmaL", "sigmaL", parameters_dict["sigmaL2"])
-sigmaR2 = RooRealVar("sigmaR", "sigmaR", parameters_dict["sigmaR2"])
+sigmaL2 = RooRealVar("sigmaL2", "sigmaL2", parameters_dict["sigmaL2"])
+sigmaR2 = RooRealVar("sigmaR2", "sigmaR2", parameters_dict["sigmaR2"])
 Bifurgauss2 = RooBifurGauss("Bifurgauss2", "Bifurgauss2", D0_M, bifurmean2, sigmaL2, sigmaR2)
 
 # Model Exponential Background
@@ -256,17 +255,19 @@ a0 = RooRealVar("a0", "a0", parameters_dict["a0"])
 background = RooExponential("Exponential", "Exponential", D0_M, a0)
 
 # Model Gaussian
-mean = RooRealVar("mean", "mean", parameters_dict["bifurmean2"])
+mean = RooRealVar("mean", "mean", parameters_dict["mean"])
 sigma = RooRealVar("sigma", "sigma", parameters_dict["sigma"])
 gauss = RooGaussian("Gaussian", "Gaussian", D0_M, mean, sigma)
 
-frac = RooRealVar("frac", "frac", parameters_dict[f"frac_{options.meson}{options.polarity}"])
-frac2 = RooRealVar("frac2", "frac2", parameters_dict[f"frac{options.meson}{options.polarity}_2"])
-frac3 = RooRealVar("frac3", "frac3", parameters_dict[f"frac{options.meson}_{options.polarity}_3"])
 
-Nsig = RooRealVar("Nsig", "Nsig", parameters_dict[f"Nsig_{options.meson}{options.polarity}"])
-Nbkg = RooRealVar("Nbkg", "Nbkg", parameters_dict[f"Nbkg{options.meson}{options.polarity}"])
-Nsig_error = parameters_dict[f"Nsig{options.meson}_{options.polarity}_error"]
+frac = RooRealVar("frac", "frac", parameters_dict[f"frac_{options.meson}_{options.polarity}"])
+frac2 = RooRealVar("frac2", "frac2", parameters_dict[f"frac_{options.meson}_{options.polarity}_2"])
+frac3 = RooRealVar("frac3", "frac3", parameters_dict[f"frac_{options.meson}_{options.polarity}_3"])
+
+Nsig = RooRealVar("Nsig", "Nsig", parameters_dict[f"Nsig_{options.meson}_{options.polarity}"])
+Nbkg = RooRealVar("Nbkg", "Nbkg", parameters_dict[f"Nbkg_{options.meson}_{options.polarity}"])
+Nsig_error = parameters_dict[f"Nsig_{options.meson}_{options.polarity}_error"]
+
 
 signal = RooAddPdf("signal", "signal", RooArgList(Johnson, Bifurgauss, Bifurgauss2, gauss), RooArgList(frac, frac2, frac3))
 model = {

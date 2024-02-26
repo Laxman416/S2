@@ -335,6 +335,17 @@ if binned:
 fitResult.Print()
 
 # Get results
+# parameters = np.array([a0.getValV(), frac_D0_down.getValV(), frac_D0_up.getValV(), frac_D0bar_down.getValV(), frac_D0bar_up.getValV(), Nsig_D0_down.getValV(), Nbkg_D0_down.getValV(), Nsig_D0_up.getValV(), Nbkg_D0_up.getValV(), Nsig_D0bar_down.getValV(), Nbkg_D0bar_down.getValV(), Nsig_D0bar_up.getValV(), Nbkg_D0bar_up.getValV(), sigmaL.getValV(), sigmaR.getValV(), sigmaL2.getValV(), sigmaR2.getValV(), frac_D0_down_2.getValV(), frac_D0_up_2.getValV(), frac_D0bar_down_2.getValV(), frac_D0bar_up_2.getValV(), Jmu.getValV(), Jlam.getValV(), Jgam.getValV(), Jdel.getValV(), bifurmean.getValV(), bifurmean2.getValV(),  Nsig_D0_down.getError(), Nsig_D0_up.getError(), Nsig_D0bar_down.getError(), Nsig_D0bar_up.getError(), mean.getValV(), sigma.getValV(), frac_D0_down_3.getValV(), frac_D0_up_3.getValV(), frac_D0bar_down_3.getValV(), frac_D0bar_up_3.getValV()])
+# np.savetxt(f"{args.path}/fit_parameters.txt", parameters, delimiter=',')
+
+
+# List of variable names
+variables = [a0, frac_D0_down, frac_D0_up, frac_D0bar_down, frac_D0bar_up, Nsig_D0_down, Nbkg_D0_down, Nsig_D0_up, Nbkg_D0_up, Nsig_D0bar_down, Nbkg_D0bar_down, Nsig_D0bar_up, Nbkg_D0bar_up, sigmaL, sigmaR, sigmaL2, sigmaR2, frac_D0_down_2, frac_D0_up_2, frac_D0bar_down_2, frac_D0bar_up_2, Jmu, Jlam, Jgam, Jdel, mean, sigma, frac_D0_down_3, frac_D0_up_3, frac_D0bar_down_3, frac_D0bar_up_3, bifurmean2, bifurmean]
+values = [var.getValV() for var in variables]
+errors = [var.getError() for var in variables]
+names = [var.GetName() for var in variables]
+
+# Get results
 parameters_dict = {name: value for name, value in zip(names, values)}
 
 # Save the dictionary to a text file
@@ -344,4 +355,5 @@ with open(f"{args.path}/fit_parameters.txt", 'w') as file:
     for name, error in zip(names, errors):
         if name.startswith("Nsig_"):
             file.write(f"{name}_error: {error}\n")
+            
 print("My program took", time.time() - start_time, "to run")
