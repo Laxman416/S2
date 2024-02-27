@@ -38,7 +38,7 @@ def parse_arguments():
     --year  Used to specify the year at which the data was taken the user is interested in.
             The argument must be one of: [16, 17, 18]. These refer to 2016, 2017 & 2018, respectively.
     --size  Used to specify the amount of events the user is interested in analysing.
-            The argument must be one of: [1-800]. The interger must be divisible by 10. The integers specify the number of root
+            The argument must be one of: [1-800]. The integer must be divisible by 10. The integers specify the number of root
             files to be read in.
     --path  Used to specify the directory in which the output files should be written. It is not required,
             in the case it is not specified, the default path is the current working directory.

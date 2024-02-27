@@ -180,16 +180,11 @@ upper_boundary = 1910
 meson = options.meson
 polarity = options.polarity
 polarity = polarity[0].upper() + polarity[1:]
-if options.year == 19:
-    if options.scheme == "eta" or options.scheme == "pT" or options.scheme == "pT_eta":
-        plot_type = f"Total Mag{polarity} Bin{options.bin}"
-    else:
-        plot_type = f"Total Mag{polarity}"
+
+if options.scheme == "eta" or options.scheme == "pT" or options.scheme == "pT_eta":
+    plot_type = f"20{options.year} Mag{polarity} Bin{options.bin}"
 else:
-    if options.scheme == "eta" or options.scheme == "pT" or options.scheme == "pT_eta":
-        plot_type = f"20{options.year} Mag{polarity} Bin{options.bin}"
-    else:
-        plot_type = f"20{options.year} Mag{polarity}"
+    plot_type = f"20{options.year} Mag{polarity}"
 
 
 if options.binned_fit=="y" or options.binned_fit=="Y":
@@ -415,7 +410,7 @@ if binned:
         #legend.SetFillColor(ROOT.kRed)
         legend.SetBorderSize(0)
         #legend.SetFillColorAlpha(ROOT.kRed, 0.3)
-        legend.SetTextSize(label_size*0.30)
+        legend.SetTextSize(label_size*0.29)
         for key, val in legend_entries.items():
             legend.AddEntry(key, val["title"], val["style"])
         legend.Draw("same")
@@ -513,28 +508,17 @@ if binned:
         except RuntimeError:
             print("Optimal parameters not found")
             Failed = 1
-        if options.year == 19:
-            if meson == "D0":
-                if options.scheme == "eta" or options.scheme == "pT" or options.scheme == "pT_eta":
-                    plot_type2 = f"Total D^{{0}} Mag{polarity} Bin{options.bin}"
-                else:
-                    plot_type2 = f"Total D^{{0}} Mag{polarity}"
+        
+        if meson == "D0":
+            if options.scheme == "eta" or options.scheme == "pT" or options.scheme == "pT_eta":
+                plot_type2 = f"20{options.year} D^{{0}} Mag{polarity} Bin{options.bin}"
             else:
-                if options.scheme == "eta" or options.scheme == "pT" or options.scheme == "pT_eta":
-                    plot_type2 = f"Total \\bar{{D}}^{{0}} Mag{polarity} Bin{options.bin}"
-                else:
-                    plot_type2 = f"Total \\bar{{D}}^{{0}} Mag{polarity}"
+                plot_type2 = f"20{options.year} D^{{0}} Mag{polarity}"
         else:
-            if meson == "D0":
-                if options.scheme == "eta" or options.scheme == "pT" or options.scheme == "pT_eta":
-                    plot_type2 = f"20{options.year} D^{{0}} Mag{polarity} Bin{options.bin}"
-                else:
-                    plot_type2 = f"20{options.year} D^{{0}} Mag{polarity}"
+            if options.scheme == "eta" or options.scheme == "pT" or options.scheme == "pT_eta":
+                plot_type2 = f"20{options.year} \\bar{{D}}^{{0}} Mag{polarity} Bin{options.bin}"
             else:
-                if options.scheme == "eta" or options.scheme == "pT" or options.scheme == "pT_eta":
-                    plot_type2 = f"20{options.year} \\bar{{D}}^{{0}} Mag{polarity} Bin{options.bin}"
-                else:
-                    plot_type2 = f"20{options.year} \\bar{{D}}^{{0}} Mag{polarity}"
+                plot_type2 = f"20{options.year} \\bar{{D}}^{{0}} Mag{polarity}"
 
 
         if Failed == 0:

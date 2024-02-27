@@ -339,7 +339,7 @@ fitResult.Print()
 # np.savetxt(f"{args.path}/fit_parameters.txt", parameters, delimiter=',')
 
 
-# List of variable names
+# # List of variable names
 variables = [a0, frac_D0_down, frac_D0_up, frac_D0bar_down, frac_D0bar_up, Nsig_D0_down, Nbkg_D0_down, Nsig_D0_up, Nbkg_D0_up, Nsig_D0bar_down, Nbkg_D0bar_down, Nsig_D0bar_up, Nbkg_D0bar_up, sigmaL, sigmaR, sigmaL2, sigmaR2, frac_D0_down_2, frac_D0_up_2, frac_D0bar_down_2, frac_D0bar_up_2, Jmu, Jlam, Jgam, Jdel, mean, sigma, frac_D0_down_3, frac_D0_up_3, frac_D0bar_down_3, frac_D0bar_up_3, bifurmean2, bifurmean]
 values = [var.getValV() for var in variables]
 errors = [var.getError() for var in variables]
