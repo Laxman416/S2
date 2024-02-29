@@ -66,7 +66,7 @@ def parse_arguments():
     parser.add_argument(
         "--meson",
         type=str,
-        choices=["D0","D0bar"],
+        choices=["D0","D0bar", "both"],
         required=True,
         help="flag to set the D0 meson flavour."
     )    
@@ -143,13 +143,6 @@ else:
     data = uproot.concatenate((f"{args.input}/20{args.year}/{args.polarity}/{args.meson}/{args.meson}_{args.polarity}_data_{args.year}_{size}_clean.root:{tree_name}" for size in size_list),
     expressions=["D0_MM", "D0_PT", "D0_ETA"])
 
-
-
-mask = np.logical_and(mask, data["D0_PT"]<10000)
-
-length = np.sum(mask)
-data = data[mask]
-
 bins = np.loadtxt(f"{args.bin_path}/{args.year}_{args.size}_bins.txt", delimiter=',')
 bins_pT = np.loadtxt(f"{args.bin_path}/{args.year}_{args.size}_pT_bins.txt", delimiter=',')
 bins_eta = np.loadtxt(f"{args.bin_path}/{args.year}_{args.size}_eta_bins.txt", delimiter=',')
@@ -159,8 +152,8 @@ nevents=np.empty(0)
 nevents_pT =np.empty(0)
 nevents_eta =np.empty(0)
 
-
 length = len(data["D0_PT"])
+
 print('Number of events', length)
 # iterate through all bins
 for i in np.arange(0, 10):
@@ -175,11 +168,9 @@ for i in np.arange(0, 10):
         nevents = np.append(nevents, len(selected_data["D0_PT"]))
         # Write out bin
         if args.meson=="both":
-            out_file_name = f"{args.path}/local/both/{args.polarity}_{args.year}_{args.size}_bin{i}.root"
+            out_file_name = f"{args.path}/local/both/{args.polarity}_{args.year}_{args.size}_bin{j}{i}.root"
         else:
-            out_file_name = f"{args.path}/local/{args.meson}_{args.polarity}_{args.year}_{args.size}_bin{i}.root"
-
-        out_file_name = f"{args.path}/local/{args.meson}_{args.polarity}_{args.year}_{args.size}_bin{j}{i}.root"
+            out_file_name = f"{args.path}/local/{args.meson}_{args.polarity}_{args.year}_{args.size}_bin{j}{i}.root"
         out_tree = "D02Kpi_Tuple/DecayTree"
         print(f"Writing to {out_file_name}...")
         out_file = uproot.recreate(out_file_name)
