@@ -31,9 +31,7 @@ mkdir $directory"/model_fitting/local"
 # mkdir $directory"/raw_asymmetry_outcome/raw_asymmetry/eta"
 # mkdir $directory"/raw_asymmetry_outcome/raw_asymmetry/local"
 # mkdir $directory"/results"
-# mkdir $directory"/binned_data/eta"
-# mkdir $directory"/binned_data/pT"
-# mkdir $directory"/binned_data/local"
+
 
 echo "The necessary directories have been created"
 echo

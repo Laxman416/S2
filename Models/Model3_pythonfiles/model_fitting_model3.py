@@ -243,7 +243,7 @@ Johnson = RooJohnson("Johnson","Johnson", D0_M, Jmu, Jlam, Jgam, Jdel)
 bifurmean2 = RooRealVar("bifurmean2", "bifurmean2", parameters_dict["bifurmean2"])
 sigmaL2 = RooRealVar("sigmaL2", "sigmaL2", parameters_dict["sigmaL2"])
 sigmaR2 = RooRealVar("sigmaR2", "sigmaR2", parameters_dict["sigmaR2"])
-Bifurgauss2 = RooBifurGauss("Bifurgauss2", "Bifurgauss2", D0_M, bifurmean2, sigmaL2, sigmaR2)
+Bifurgauss2 = RooBifurGauss("Bifurgauss2", "Bifurgauss", D0_M, bifurmean2, sigmaL2, sigmaR2)
 
 # Model Exponential Background
 a0 = RooRealVar("a0", "a0", parameters_dict["a0"])
@@ -404,13 +404,15 @@ if binned:
         latex.Draw('same')
 
         legend = ROOT.TLegend(
-            0.16, 0.91 - ywidth - 0.05, 0.1 + xwidth, 0.91, "#bf{#it{"+plot_type+"}}"
+            0.15, 0.91 - ywidth - 0.04, 0.015 + xwidth, 0.91, "#bf{#it{"+plot_type+"}}"
         )
         legend.SetFillStyle(0)
-        #legend.SetFillColor(ROOT.kRed)
+        # legend.SetFillStyle(1001)  # Set the fill style for the legend
+        # legend.SetFillColor(ROOT.kGray)
+        # legend.SetFillColorAlpha(ROOT.kGray, 0.8)
+
         legend.SetBorderSize(0)
-        #legend.SetFillColorAlpha(ROOT.kRed, 0.3)
-        legend.SetTextSize(label_size*0.29)
+        legend.SetTextSize(label_size*0.305)
         for key, val in legend_entries.items():
             legend.AddEntry(key, val["title"], val["style"])
         legend.Draw("same")
@@ -457,9 +459,9 @@ if binned:
         pull_frame.GetYaxis().SetTitleSize(title_size)
         pull_frame.GetYaxis().SetTitleOffset(0.35)
         if meson == "D0":
-            pull_frame.GetXaxis().SetTitle(r"#it{D^{0}} mass [MeVc^{-2}]")
+            pull_frame.GetXaxis().SetTitle(r"m(K^{-}#pi^{+}) [MeVc^{-2}]")
         elif meson == "D0bar":
-            pull_frame.GetXaxis().SetTitle(r"#it{#bar{D}^{0}} mass [MeVc^{-2}]")
+            pull_frame.GetXaxis().SetTitle(r"m(K^{-}#pi^{+}) [MeVc^{-2}]")
 
         line = ROOT.TLine(D0_M.getMin(), 0, D0_M.getMax(), 0)
         pull_frame.Draw()
