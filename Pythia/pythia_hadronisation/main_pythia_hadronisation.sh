@@ -4,16 +4,19 @@ min_seeding=$2 # Does a loop for size in the range size to minseeding
 if ! [[ "$min_seeding" =~ ^[0-9]+$ ]]; then
   echo "WARNING: You did not select a valid option for the minsize fit"
   echo
-  echo "The selection will run over sizes in the array [10, ..., $size]"
+  echo "The selection will run over sizes in the array [10, ..., $min_seeding]"
   min_seeding=10
 else
-  echo "The selection will run over sizes in the array [$minsize,...,$size]"
+  echo "The selection will run over sizes in the array [$seeding,...,$min_seeding]"
 fi
 
 while [ $seeding -ge $min_seeding ]; do
     echo "Inside the loop. Seeding #: $seeding"
-    make ./runpythia 
+    ./runpythia $seeding
     seeding=$((seeding - 1))  # For example, decrease 'size' by 1 in each iteration
+    git add pythia_hadronisation$seeding.csv 
+    git commit -m "Commited $seeding file"
+    git push origin main
 done
 
 

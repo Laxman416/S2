@@ -23,14 +23,7 @@ if [[ "$binned" != "y" ]]; then
     fi
 fi
 
-if ! [[ "$minsize" =~ ^[0-9]+$ ]]; then
-  echo "WARNING: You did not select a valid option for the minsize fit"
-  echo
-  echo "The selection will run over sizes in the array [10, ..., $size]"
-  minsize=10
-else
-  echo "The selection will run over sizes in the array [$minsize,...,$size]"
-fi
+
 # Create necessary directories to store output
 
 
