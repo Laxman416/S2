@@ -2,6 +2,9 @@ directory=$1
 year=$2
 size=$3
 
+mkdir $directory
+mkdir $directory"/binned_data"
+mkdir $directory"/binned_data/binning_scheme"
 mkdir /eos/lhcb/user/l/lseelan/Total/binned_data/
 mkdir /eos/lhcb/user/l/lseelan/Total/binned_data/$year
 mkdir /eos/lhcb/user/l/lseelan/Total/binned_data/$year/local
@@ -31,7 +34,6 @@ echo "Applying binning scheme independent of meson flavour, needed for Adet"
 for polar in up down 
 do    
     python apply_binning_scheme.py --year $year --size $size --meson 'both' --polarity $polar --path "/eos/lhcb/user/l/lseelan/Total/binned_data/"$year --input "/eos/lhcb/user/l/lseelan/Total/selected_data" --bin_path $directory"/binned_data/binning_scheme"
-    echo "Ploted 2D graph"
 done
 
 echo "The data has been binned, Adet"

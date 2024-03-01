@@ -138,7 +138,7 @@ if isinstance(size_value, int):
 
 if args.meson=="both":
     data = uproot.concatenate((f"{args.input}/20{args.year}/{args.polarity}/both/{args.polarity}_data_{args.year}_{size}_clean.root:{tree_name}" for size in size_list),
-    expressions=["D0_MM", "D0_PT", "D0_ETA"])
+    expressions=["D0_PT", "D0_ETA", "P1_ETA", "P2_ETA", "P1_PT", "P2_PT", "P1_PHI", "P2_PHI"])
 else:
     data = uproot.concatenate((f"{args.input}/20{args.year}/{args.polarity}/{args.meson}/{args.meson}_{args.polarity}_data_{args.year}_{size}_clean.root:{tree_name}" for size in size_list),
     expressions=["D0_MM", "D0_PT", "D0_ETA"])
