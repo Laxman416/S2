@@ -13,10 +13,11 @@ fi
 while [ $seeding -ge $min_seeding ]; do
     echo "Inside the loop. Seeding #: $seeding"
     ./runpythia $seeding
-    seeding=$((seeding - 1))  # For example, decrease 'size' by 1 in each iteration
     git add pythia_hadronisation$seeding.csv 
     git commit -m "Commited $seeding file"
     git push origin main
+    seeding=$((seeding - 1))  # For example, decrease 'size' by 1 in each iteration
+
 done
 
 

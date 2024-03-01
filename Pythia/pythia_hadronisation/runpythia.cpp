@@ -40,7 +40,7 @@ int main(int argc, char* argv[]) {
   // Processes used to generate ccbar events
   pythia.readString("HardQCD:gg2ccbar = on"); // Switch on process.
   pythia.readString("HardQCD:qqbar2ccbar = on"); // add another process
-  pythia.readString("PhaseSpace:pTHatMin = 1"); // 1 MeV
+  pythia.readString("PhaseSpace:pTHatMin = 1"); // 1 GeV
   pythia.readString("PhaseSpace:pTHatMax = 10"); // 10 GeV
 
   // Beam parameters, assuming no crossing angle
@@ -71,7 +71,7 @@ int main(int argc, char* argv[]) {
 
 
   pythia.init(); // Initialize; incoming pp beams is default.
-  int nEvents = 4000000; // number of events
+  int nEvents = 10000; // number of events
 
   // Create file to write events to
   std::ofstream outputfile;
@@ -79,8 +79,8 @@ int main(int argc, char* argv[]) {
   outputfile << "Event , PID , PT , Y \n";
 
   // Set rapidity range limits
-  double rapidityMin = -2.0; // Minimum rapidity CHatGPT??
-  double rapidityMax = 2.0;  // Maximum rapidity
+  double rapidityMin = 2.0; // Minimum rapidity 
+  double rapidityMax = 5.0;  // Maximum rapidity
 
   // Generate events in event loop.
   for (int iEvent = 0; iEvent < nEvents; ++iEvent){
