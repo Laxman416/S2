@@ -71,7 +71,7 @@ int main(int argc, char* argv[]) {
 
 
   pythia.init(); // Initialize; incoming pp beams is default.
-  int nEvents = 10000; // number of events
+  int nEvents = 2000000; // number of events
 
   // Create file to write events to
   std::ofstream outputfile;
