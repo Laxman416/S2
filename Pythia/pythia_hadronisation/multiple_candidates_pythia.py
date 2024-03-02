@@ -106,7 +106,7 @@ def selection_criteria(raw_data):
     rapidity = raw_data[:, 3]
     # Create boolean masks for filtering.
     mask_pT = (pT > 0) & (pT < 10)
-    mask_rapidity = (rapidity > 0) & (rapidity < 6)
+    mask_rapidity = (rapidity > 2) & (rapidity < 5)
 
     # Combine masks.
     combined_mask = mask_pT & mask_rapidity

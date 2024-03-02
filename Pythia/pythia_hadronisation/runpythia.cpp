@@ -75,7 +75,7 @@ int main(int argc, char* argv[]) {
 
   // Create file to write events to
   std::ofstream outputfile;
-  outputfile.open((std::string("/afs/cern.ch/work/l/lseelan/Semester2/Pythia/pythia_hadronisation/pythia_hadronisation")+std::string(argv[1])+std::string(".csv")));
+  outputfile.open((std::string("/afs/cern.ch/work/l/lseelan/Semester2/Pythia/Pythia_Data/simulated_data/pythia_hadronisation")+std::string(argv[1])+std::string(".csv")));
   outputfile << "Event , PID , PT , Y \n";
 
   // Set rapidity range limits

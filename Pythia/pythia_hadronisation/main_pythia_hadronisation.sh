@@ -20,6 +20,8 @@ while [ $seeding -ge $min_seeding ]; do
 
 done
 
+# python combining_csv.py --path '/afs/cern.ch/work/l/lseelan/Semester2' --max_file 20
+
 
 # mkdir $directory"/pythia_hadronisation"
 # mkdir $directory"/pythia_hadronisation/selected_data"
