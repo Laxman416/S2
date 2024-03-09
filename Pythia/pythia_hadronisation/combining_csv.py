@@ -46,6 +46,7 @@ for i in range(1, args.max_file+1, +1):
 # Initialize combined dataframe
 combined = pd.DataFrame()
 for int_value in integer_list:
+    print(f"Adding file {int_value}")
     try:
         # Read the CSV file for the current integer
         current_file = pd.read_csv(f"{args.path}/Pythia/Pythia_Data/simulated_data/pythia_hadronisation{int_value}.csv")

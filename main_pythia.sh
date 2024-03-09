@@ -19,18 +19,6 @@ mkdir $directory"/Pythia//asymmetry"
 mkdir $directory"/Pythia//asymmetry/local"
 mkdir $directory"/Pythia//asymmetry/pT"
 mkdir $directory"/Pythia//asymmetry/eta"
-mkdir "Pythia/Pythia_Data/binned_data"
-mkdir "Pythia/Pythia_Data/binned_data/binning_scheme"
-mkdir "Pythia/Pythia_Data/binned_data/pT"
-mkdir "Pythia/Pythia_Data/binned_data/eta"
-mkdir "Pythia/Pythia_Data/binned_data/local"
-mkdir "Pythia/Pythia_Data/asymmetry"
-mkdir "Pythia/Pythia_Data/asymmetry/pT"
-mkdir "Pythia/Pythia_Data/asymmetry/eta"
-mkdir "Pythia/Pythia_Data/asymmetry/local"
-mkdir "Pythia/Pythia_Data/results"
-
-
 
 echo "The necessary directories have been created"
 
@@ -43,6 +31,7 @@ else
   echo "The selection will run over sizes in the array [$seeding,...,$min_seeding]"
 fi
 
+# echo "Starting Simulation"
 # while [ $seeding -ge $min_seeding ]; do
 #     echo "Inside the loop. Seeding #: $seeding"
 #     Pythia/pythia_hadronisation/runpythia $seeding
@@ -50,10 +39,10 @@ fi
 #     git commit -m "Commited $seeding file"
 #     git push origin main
 #     seeding=$((seeding - 1))  # For example, decrease 'size' by 1 in each iteration
-
 # done
+# echo "Finished simulation"
 
-# python Pythia/pythia_hadronisation/combining_csv.py --path '/afs/cern.ch/work/l/lseelan/Semester2' --max_file $seeding
+python Pythia/pythia_hadronisation/combining_csv.py --path '/afs/cern.ch/work/l/lseelan/Semester2' --max_file $seeding
 
 echo
 echo "Created a csv file with all the data"
