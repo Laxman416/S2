@@ -69,7 +69,7 @@ def parse_arguments():
     
     return parser.parse_args()
 
-def get_data():
+def get_data(polarity):
     '''
     Reads in the root files containing the LHCb data of D0 decays into two hadrons. It takes into
     account the year and size requested by the user, and handles the different scenarios appropiately.
@@ -92,8 +92,8 @@ def get_data():
         code_down = "00172208"
 
     # get path to directories of the requested year
-    directory_up = f"/eos/lhcb/grid/prod/lhcb/LHCb/Collision{options.year}/CHARM_D02HH_DVNTUPLE.ROOT/{code_up}/0000/"
-    directory_down = f"/eos/lhcb/grid/prod/lhcb/LHCb/Collision{options.year}/CHARM_D02HH_DVNTUPLE.ROOT/{code_down}/0000/"
+    directory_up = f"/eos/lhcb/grid/prod/lhcb/LHCb/Collision{options.year}/CHARM_D02HH_DVNTUPLE.ROOT/{code_up}/0000"
+    directory_down = f"/eos/lhcb/grid/prod/lhcb/LHCb/Collision{options.year}/CHARM_D02HH_DVNTUPLE.ROOT/{code_down}/0000"
     
     # set the number of files to concatenate depending on the size requested
     max_events = None
@@ -102,19 +102,33 @@ def get_data():
         #data_to_concatenate = np.arange(int(options.size)-9, int(options.size)+1, 1)
         data_to_concatenate = np.arange(int(options.size)-9, int(options.size)+1, 1)
 
+    # 17 up missing 26
+    data_to_concatenate = data_to_concatenate[data_to_concatenate != 26]
 
     # # reads the data from the files requested by the user and concatanates it
-        for i in data_to_concatenate:
-            try:
-                data_up = uproot.concatenate((f"{directory_up}/{code_up}_00000{i:03d}_1.charm_d02hh_dvntuple.root:{tree_name}"), expressions=read_only_these_variables, max_num_elements=max_events)
-                data_down = uproot.concatenate((f"{directory_down}/{code_down}_00000{i:03d}_1.charm_d02hh_dvntuple.root:{tree_name}"), expressions=read_only_these_variables, max_num_elements=max_events)
+    if polarity == "up":
+        data = uproot.concatenate((f"{directory_up}/{code_up}_00000{i:03d}_1.charm_d02hh_dvntuple.root:{tree_name}" for i in data_to_concatenate), expressions=read_only_these_variables, max_num_elements=max_events)
+    if polarity == "down":
+        data = uproot.concatenate((f"{directory_down}/{code_down}_00000{i:03d}_1.charm_d02hh_dvntuple.root:{tree_name}" for i in (data_to_concatenate+1)), expressions=read_only_these_variables, max_num_elements=max_events)
+    
+    # if polarity == "up":
+    #     for i in data_to_concatenate:
+    #         try:
+    #             data = uproot.concatenate((f"{directory_up}/{code_up}_00000{i:03d}_1.charm_d02hh_dvntuple.root:{tree_name}"), expressions=read_only_these_variables, max_num_elements=max_events)
 
-            except FileNotFoundError as e:
-                print(f"FileNotFoundError: {e}")
+    #         except FileNotFoundError as e:
+    #             print(f"FileNotFoundError: {e}")
+    # elif polarity == "down":
+    #     for i in data_to_concatenate:
+    #         try:
+    #             data = uproot.concatenate((f"{directory_down}/{code_down}_00000{i:03d}_1.charm_d02hh_dvntuple.root:{tree_name}"), expressions=read_only_these_variables, max_num_elements=max_events)
 
-        print('Checkpoint: Data has been read')
+    #         except FileNotFoundError as e:
+    #             print(f"FileNotFoundError: {e}")
 
-    return data_up, data_down
+    print(f'Checkpoint: {polarity} Data has been read')
+
+    return data
     
 def cut_data(data):
     '''
@@ -238,11 +252,14 @@ read_only_these_variables = [
 ]
 
 # read data in
-raw_data = get_data()
+raw_data_up = get_data("up")
+print(len(raw_data_up))
+raw_data_down = get_data("down")
+
 
 # selection of events
-DATA_UP = cut_data(raw_data[0])
-DATA_DOWN = cut_data(raw_data[1])
+DATA_UP = cut_data(raw_data_up)
+DATA_DOWN = cut_data(raw_data_down)
 
 # save cut data 
 save_all(str(options.year), options.size)

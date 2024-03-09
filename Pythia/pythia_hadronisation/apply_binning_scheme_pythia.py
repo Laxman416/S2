@@ -31,7 +31,7 @@ def parse_arguments():
                 in the case it is not specified, the default path is the current working directory.
     --bin_path  Used to specify the directory in which the binning scheme should be found. It is not required,
                 in the case it is not specified, the default path is the current working directory.
-    
+    --
     Returns the parsed arguments.
     '''
     parser = argparse.ArgumentParser()
@@ -46,12 +46,12 @@ def parse_arguments():
         "--size",
         type=int,
         required=True,
-       help="flag to set the proportion of the full Turbo data set to be used."
+       help="flag to set the size of the dataset that the binning scheme was created from."
     )
     parser.add_argument(
         "--meson",
         type=str,
-        choices=["D0","D0bar"],
+        choices=["D0","D0bar","both"],
         required=False,
         help="flag to set the D0 meson flavour."
     )    
@@ -162,7 +162,7 @@ for i in np.arange(0, 10):
     selected_data = data[rapidity_mask]
     nevents_rapidity = np.append(nevents_rapidity, len(selected_data))
     
-    out_file_name = f"{args.path}/rapidity/{args.meson}_rapidity_bin{i}.csv"
+    out_file_name = f"{args.path}/eta/{args.meson}_eta_bin{i}.csv"
     print(f"Writing to {out_file_name}...")
     # Write out bin
     with open(out_file_name, 'w', newline='') as file:
@@ -172,6 +172,6 @@ for i in np.arange(0, 10):
             writer.writerow(row)
 
 # write out number of events in each bin
-np.savetxt(f"{args.bin_path}/number_of_events_{args.meson}.txt", nevents, delimiter=',')
-np.savetxt(f"{args.bin_path}/number_of_events_pT_{args.meson}.txt", nevents_pT, delimiter=',')
-np.savetxt(f"{args.bin_path}/number_of_events_rapidity_{args.meson}.txt", nevents_rapidity, delimiter=',')
+np.savetxt(f"{args.path}/binning_scheme/number_of_events_{args.meson}.txt", nevents, delimiter=',')
+np.savetxt(f"{args.path}/binning_scheme/number_of_events_pT_{args.meson}.txt", nevents_pT, delimiter=',')
+np.savetxt(f"{args.path}/binning_scheme/number_of_events_eta_{args.meson}.txt", nevents_rapidity, delimiter=',')

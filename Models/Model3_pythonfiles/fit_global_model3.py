@@ -70,6 +70,13 @@ def parse_arguments():
         help="flag to set the path where the output files should be written to"
     )
     parser.add_argument(
+        "--initial_guess_path",
+        type=dir_path,
+        required=False,
+        default=os.getcwd(),
+        help="flag to set the path where the output files should be written to"
+    )
+    parser.add_argument(
         "--binned_fit",
         type=str,
         choices=["y", "Y", "n", "N"],
@@ -148,6 +155,8 @@ if args.binned_fit=="y" or args.binned_fit=="Y":
     binned = True
 else:
     binned = False
+
+
 ROOT.RooMsgService.instance().setGlobalKillBelow(ROOT.RooFit.ERROR) # mute RooFit warnings
 ttree_D0_up = TChain("D02Kpi_Tuple/DecayTree")
 ttree_D0_down = TChain("D02Kpi_Tuple/DecayTree")

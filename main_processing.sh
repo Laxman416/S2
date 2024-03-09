@@ -56,7 +56,7 @@ while [ $size -ge $minsize ]; do
         for polar in up down
         do
 
-            python multiple_candidates.py --year $year --size $size --polarity $polar --path "/eos/lhcb/user/l/lseelan/"$directory"/selected_data"
+             python multiple_candidates.py --year $year --size $size --polarity $polar --path "/eos/lhcb/user/l/lseelan/"$directory"/selected_data"
         done
         echo "Multiple candidates have been removed"
     done
@@ -68,10 +68,10 @@ done
 #################################################################################
 #################################################################################
 
-# Remove files that don't end with "_clean.root"
+# # Remove files that don't end with "_clean.root"
 find "/eos/lhcb/user/l/lseelan/"$directory"/selected_data" -type f ! -name '*_clean.root' -exec rm -f {} +
 
-# list the remaining files (those ending with "_clean.root")
+# # list the remaining files (those ending with "_clean.root")
 find "/eos/lhcb/user/l/lseelan/"$directory"/selected_data"  -type f -name '*_clean.root'
 
-# echo "Unneccesary files have been removed"
+# # echo "Unneccesary files have been removed"

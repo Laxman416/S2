@@ -31,7 +31,7 @@ echo "The data has been binned"
 echo
 
 echo "Applying binning scheme independent of meson flavour, needed for Adet"
-for polar in up down 
+for polar in up down
 do    
     python apply_binning_scheme.py --year $year --size $size --meson 'both' --polarity $polar --path "/eos/lhcb/user/l/lseelan/Total/binned_data/"$year --input "/eos/lhcb/user/l/lseelan/Total/selected_data" --bin_path $directory"/binned_data/binning_scheme"
 done

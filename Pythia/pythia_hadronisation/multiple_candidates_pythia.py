@@ -2,7 +2,7 @@
 multiple_candidates_pythia.py
 
 This code reads in the outputted .csv file from runpythia.cpp. The .csv file contains the simulated event information, specifically the event number, PID number and the associated values of the transverse momentum (pT) and rapidity(y).
-The script applys selection criteria so that only simulated events that have 0 < pT < 10 GeV/c and 0 < y < 6 are accepted. In addition events that are multiple candidates (have the same event number) are removed.
+The script applys selection criteria so that only simulated events that have 0 < pT < 10 GeV/c and 2 < y < 5 are accepted. In addition events that are multiple candidates (have the same event number) are removed.
 
 Author: Sam Taylor (samuel.taylor-9@student.manchester.ac.uk) and Laxman Seelan (laxman.seelan@student.manchester.ac.uk)
 Last edited: 15th February 2024
@@ -53,7 +53,7 @@ def read_from_file():
     Returns:
         data (array): An array containging the simulated events information.
     """
-    data = np.genfromtxt(f'{args.input}/pythia_hadronisation72.csv', delimiter = ',', skip_header = 1)
+    data = np.genfromtxt(f'{args.input}/combined_simulated_data.csv', delimiter = ',', skip_header = 1)
     
     return data
 
@@ -83,7 +83,7 @@ def selection_criteria(raw_data):
     """
     This function imposes the pT and rapidity (y) selection criteria on the simulated events.
     The requirements are that: 0 < pT < 10 GeV/c,
-                               0 < y < 6.
+                               2 < y < 5.
                                
     The selection requirements are imposed by using mask arrays. The combined mask is applied to the original data array to extract only the rows that meet both conditions. 
     This is done using array indexing, where only the rows corresponding to True values in the mask are selected, effectively filtering out the rows that don't satisfy the conditions.
@@ -128,6 +128,7 @@ def dir_path(string):
     else:
         raise NotADirectoryError(string)
 
+
 def save_file(D0, D0bar, both, path):
     """
     Saves the selected simulated data into three .csv files: one each for D0 and D0bar mesons, and one for both mesons.
@@ -140,11 +141,14 @@ def save_file(D0, D0bar, both, path):
     """
     filenames = [f'{path}/D0_clean_pythia_data.csv', f'{path}/D0bar_clean_pythia_data.csv', f'{path}/clean_pythia_data.csv']
     data_list = [D0, D0bar, both]
+    headers_list = [['Event ', 'PID ', 'PT ', 'Y '], ['Event ', 'PID ', 'PT ', 'Y '], ['Event ', 'PID ', 'PT ', 'Y ']]
     # Writing to CSV files
     for i in range(len(filenames)):
         with open(filenames[i], 'w', newline='') as file:
             writer = csv.writer(file)
+            writer.writerow(headers_list[i])  # Writing headers
             writer.writerows(data_list[i])
+
 
 def split_meson(data):
     """

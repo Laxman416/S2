@@ -156,7 +156,7 @@ length = len(data["D0_PT"])
 
 print('Number of events', length)
 # iterate through all bins
-for i in np.arange(0, 10):
+for i in np.arange(0,10):
     pT_mask = np.ones(length)
     pT_mask = np.logical_and(pT_mask, data["D0_PT"]>bins[0,i])
     pT_mask = np.logical_and(pT_mask, data["D0_PT"]<=bins[0,i+1])
@@ -199,7 +199,7 @@ for i in np.arange(0, 10):
     out_file[out_tree].extend({branch: selected_data[branch] for branch in branches.keys()})
     out_file.close()
 
-# Create root files for eta 
+# # Create root files for eta 
 for i in np.arange(0, 10):
     eta_mask = np.ones(length)
     eta_mask = np.logical_and(eta_mask, data["D0_ETA"]>bins_eta[i])

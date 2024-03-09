@@ -1,10 +1,38 @@
 seeding=$1
 min_seeding=$2 # Does a loop for size in the range size to minseeding
+directory=$3 # Need to know where to save binned data using the binning scheme found in that directory
+year=$4 # Need to know the year to access binning scheme
+size=$5 # Need to know size used to create the binning scheme
+
 # Need to configure pythia folder after downloading it. Then copy pythia_hadronisation into that file
 
 mkdir "Pythia/Pythia_Data"
 mkdir "Pythia/Pythia_Data/simulated_data"
+mkdir $directory"/Pythia"
+mkdir $directory"/Pythia/binned_data"
+mkdir $directory"/Pythia/binned_data/local"
+mkdir $directory"/Pythia/binned_data/pT"
+mkdir $directory"/Pythia/binned_data/eta"
+mkdir $directory"/Pythia/binned_data/binning_scheme"
+mkdir $directory"/Pythia//results"
+mkdir $directory"/Pythia//asymmetry"
+mkdir $directory"/Pythia//asymmetry/local"
+mkdir $directory"/Pythia//asymmetry/pT"
+mkdir $directory"/Pythia//asymmetry/eta"
+mkdir "Pythia/Pythia_Data/binned_data"
+mkdir "Pythia/Pythia_Data/binned_data/binning_scheme"
+mkdir "Pythia/Pythia_Data/binned_data/pT"
+mkdir "Pythia/Pythia_Data/binned_data/eta"
+mkdir "Pythia/Pythia_Data/binned_data/local"
+mkdir "Pythia/Pythia_Data/asymmetry"
+mkdir "Pythia/Pythia_Data/asymmetry/pT"
+mkdir "Pythia/Pythia_Data/asymmetry/eta"
+mkdir "Pythia/Pythia_Data/asymmetry/local"
+mkdir "Pythia/Pythia_Data/results"
 
+
+
+echo "The necessary directories have been created"
 
 if ! [[ "$min_seeding" =~ ^[0-9]+$ ]]; then
   echo "WARNING: You did not select a valid option for the minsize fit"
@@ -15,34 +43,43 @@ else
   echo "The selection will run over sizes in the array [$seeding,...,$min_seeding]"
 fi
 
-while [ $seeding -ge $min_seeding ]; do
-    echo "Inside the loop. Seeding #: $seeding"
-    Pythia/pythia_hadronisation/runpythia $seeding
-    git add ./Pythia/pythia_hadronisation/simulated_data/pythia_hadronisation$seeding.csv 
-    git commit -m "Commited $seeding file"
-    git push origin main
-    seeding=$((seeding - 1))  # For example, decrease 'size' by 1 in each iteration
+# while [ $seeding -ge $min_seeding ]; do
+#     echo "Inside the loop. Seeding #: $seeding"
+#     Pythia/pythia_hadronisation/runpythia $seeding
+#     git add ./Pythia/pythia_hadronisation/simulated_data/pythia_hadronisation$seeding.csv 
+#     git commit -m "Commited $seeding file"
+#     git push origin main
+#     seeding=$((seeding - 1))  # For example, decrease 'size' by 1 in each iteration
 
-done
+# done
 
 # python Pythia/pythia_hadronisation/combining_csv.py --path '/afs/cern.ch/work/l/lseelan/Semester2' --max_file $seeding
 
+echo
 echo "Created a csv file with all the data"
-# echo "The necessary directories have been created"
-# echo
+echo
 
-# python pythia_hadronisation/multiple_candidates_pythia.py --input $directory"/pythia_hadronisation"  --path $directory"/pythia_hadronisation/selected_data"
+# python Pythia/pythia_hadronisation/multiple_candidates_pythia.py --input "Pythia/Pythia_Data"  --path "Pythia/Pythia_Data"
 
-# echo "The phase space selection criteria has been applied and multiple candidates have been removed from the simulation data"
+echo
+echo "The phase space selection criteria has been applied and multiple candidates have been removed from the simulation data"
+echo
 
-# python pythia_hadronisation/apply_binning_scheme_pythia.py --year $year --size $size --path $directory"/pythia_hadronisation/binned_data" --input $directory"/pythia_hadronisation/selected_data" --bin_path $directory"/pythia_hadronisation/binned_data/binning_scheme"
+# python Pythia/pythia_hadronisation/create_binning_scheme_pythia.py --path "Pythia/Pythia_Data/binned_data/binning_scheme" --input "Pythia/Pythia_Data"
 
-# echo "The simulation data has been binned"
-
-# for scheme in local pT rapidity 
-# do
-#     python pythia_hadronisation/Aprod_pythia.py --path $directory"/pythia_hadronisation/results/$scheme" --input $directory"/pythia_hadronisation/binned_data/$scheme" --scheme $scheme
+# for meson in D0 D0bar
+# do 
+#   python Pythia/pythia_hadronisation/apply_binning_scheme_pythia.py --year $year --size $size --meson $meson --path $directory"/Pythia/binned_data" --input "Pythia/Pythia_Data" --bin_path $directory"/binned_data/binning_scheme"
 # done
 
-# echo "The global and local production asymmetries have been calculated"
-# echo
+echo
+echo "The simulation data has been binned"
+echo
+
+# for scheme in local pT eta
+# do
+#     python Pythia/pythia_hadronisation/Aprod_pythia.py --path $directory"/Pythia/asymmetry/$scheme" --input_bins $directory"/Pythia/binned_data/$scheme" --scheme $scheme --results_path $directory"/Pythia/results" --input_global "Pythia/Pythia_Data" --year $year --size $size 
+# done
+
+echo "The global and local production asymmetries have been calculated"
+echo
