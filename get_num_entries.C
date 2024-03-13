@@ -1,7 +1,9 @@
 // to run code root -l -q get_num_entries.C
 {
-    int checkAllFiles = 0; // Set to 1 to check all files, 0 to check a specific file, 2 to run a third loop for pT and eta
-    char specificFilePath[] = "/eos/lhcb/user/l/lseelan/Total/selected_data/2016/down/D0/D0_down_data_16_10_clean.root"; //individual
+    int checkAllFiles = 1; // Set to 1 to check all files, 0 to check a specific file, 2 to run a third loop for pT and eta
+    char specificFilePath[] = "/eos/lhcb/user/l/lseelan/Total/selected_data/2017/down/D0/D0_down_data_17_10_clean.root"; //individual
+    int size = 10;
+    char filepath[10] = "down";
 
     // Check specific file if flag is not set
     if (checkAllFiles == 0) {

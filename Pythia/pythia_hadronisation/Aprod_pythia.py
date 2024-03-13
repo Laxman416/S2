@@ -16,6 +16,8 @@ import os
 import argparse
 import numpy as np
 import csv
+import pandas as pd
+import glob
 
 # - - - - - - - FUNCTIONS - - - - - - - #
 def parse_arguments():
@@ -86,11 +88,12 @@ def read_from_file(meson, bin_num, scheme):
     
     Returns these two values.
     '''
+    bin_num = int(bin_num)
     filename = f"{args.input_bins}/number_of_events_{scheme}_{meson}.txt"
     with open(filename, 'r') as file:
         lines = file.readlines()
         # Get the N value based on bin number
-        N_value = float(lines[bin_num - 1])  # Subtract 1 as Python uses 0-based indexing
+        N_value = float(lines[bin_num])  # Subtract 1 as Python uses 0-based indexing
         # Assuming you want to calculate uncertainty as the square root of N
         N_err_value = np.sqrt(N_value)
     return N_value, N_err_value
@@ -111,6 +114,10 @@ def count_rows(filename):
 
 def production_asymm(N_D0, N_D0_err, N_D0bar, N_D0bar_err):
 
+    print(f'N_D0 {N_D0}')
+    print(f'N_D0bar {N_D0bar}')
+    print(f'N_D0_err {N_D0_err}')
+    print(f'N_D0bar_err {N_D0bar_err}')
     A_prod = (N_D0 - N_D0bar)/(N_D0 + N_D0bar)
     A_prod_err = np.sqrt((2 * N_D0bar / (N_D0 + N_D0bar)**2 * N_D0_err)**2 + (-2 * N_D0 / (N_D0 + N_D0bar)**2 * N_D0bar_err)**2)
 
@@ -129,7 +136,7 @@ def output_results(A_prod, A_prod_err, bin_num):
     '''
 
     asymmetry = str(round(A_prod, 10)) + '% +/- ' + str(round(A_prod_err, 10)) + '% (stat)'
-    print(f'The custom pythia binning scheme results in a prod asymmetry of bin {bin_num} is:', asymmetry)
+    print(f'The binning scheme results in a prod asymmetry of bin {bin_num} is:', asymmetry)
     print("------------------------------")
     
     array = np.array([A_prod, A_prod_err])
@@ -150,10 +157,15 @@ def A_prod_global():
     return A_prod_bin_integrated, A_prod_err_bin_integrated,
 
 def read_from_file_global(meson):
-    filename = f"{args.input_global}/{meson}_clean_pythia_data.csv"
-    with open(filename):
-        N_global = count_rows(filename)
-        N_err_global = np.sqrt(N_global)
+    N_global = 0
+    N_err_global = 0
+    filename_pattern = f"{args.input_global}/{meson}_clean_pythia_data_*.csv"
+    filenames = glob.glob(filename_pattern)    
+    for filename in filenames:
+            with open(filename):        
+                N_global = count_rows(filename)
+                N_err_global = np.sqrt(N_global)
+                
     return N_global, N_err_global
 
 # - - - - - - - MAIN CODE - - - - - - - #

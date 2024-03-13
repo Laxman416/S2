@@ -14,6 +14,9 @@ import os
 import argparse
 import numpy as np
 import csv
+import pandas as pd
+import glob
+
 
 # - - - - - - - - FUNCTIONS - - - - - - - - #
 
@@ -92,18 +95,29 @@ def dir_path(string):
 args = parse_arguments()
 
 if args.meson == 'D0':
-    data = np.genfromtxt(f'{args.input}/{args.meson}_clean_pythia_data.csv', delimiter = ',')
-    pT = data[:, 2]
-    rapidity = data[:, 3]
+    files = glob.glob(f'{args.input}/D0_clean_pythia_data_*.csv')
 elif args.meson == 'D0bar':
-    data = np.genfromtxt(f'{args.input}/{args.meson}_clean_pythia_data.csv', delimiter = ',')
-    pT = data[:, 2]
-    rapidity = data[:, 3]
-else:
-    data = np.genfromtxt(f'{args.input}/clean_pythia_data.csv', delimiter = ',')
-    pT = data[:, 2]
-    rapidity = data[:, 3]
-    args.meson = 'both'
+    files = glob.glob(f'{args.input}/D0bar_clean_pythia_data_*.csv')
+elif args.meson == 'both':
+    files = glob.glob(f'{args.input}/clean_pythia_data_*.csv')
+
+# Define an empty list to store chunked dataframes
+chunked_dfs = []
+
+# Iterate over each matching file
+for file in files:
+    # Read CSV file in chunks
+    chunks = pd.read_csv(file, usecols=[' PT ', ' Y '], chunksize=100000)  # Adjust chunksize as needed
+    # Iterate over each chunk and store it in the list
+    for chunk in chunks:
+        chunked_dfs.append(chunk)
+
+# Concatenate all chunked dataframes into a single DataFrame
+data = pd.concat(chunked_dfs, ignore_index=True)
+
+# Extract 'PT' and 'Y' columns from the DataFrame
+pT = data[' PT ']
+rapidity = data[' Y ']
 
 # Loads in .txt of the binning scheme
 bins = np.loadtxt(f"{args.bin_path}/{args.year}_{args.size}_bins.txt", delimiter=',')
@@ -172,6 +186,6 @@ for i in np.arange(0, 10):
             writer.writerow(row)
 
 # write out number of events in each bin
-np.savetxt(f"{args.path}/binning_scheme/number_of_events_{args.meson}.txt", nevents, delimiter=',')
+np.savetxt(f"{args.path}/binning_scheme/number_of_events_local_{args.meson}.txt", nevents, delimiter=',')
 np.savetxt(f"{args.path}/binning_scheme/number_of_events_pT_{args.meson}.txt", nevents_pT, delimiter=',')
 np.savetxt(f"{args.path}/binning_scheme/number_of_events_eta_{args.meson}.txt", nevents_rapidity, delimiter=',')

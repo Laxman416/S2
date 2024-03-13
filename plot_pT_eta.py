@@ -138,7 +138,7 @@ simulated_asymmetry = np.array([])
 simulated_asymmetry_error = np.array([])
 for j in range(0,10):
     bin_num = str(j)
-    with open(f'{args.sim_asymm_path}/asymmetries_pythia_{args.year}_{args.size}_{args.scheme}_bin{bin_num}.txt') as f:
+    with open(f'{args.sim_asymm_path}/asymmetries_pythia_{args.scheme}_bin{bin_num}.txt') as f:
         lines = f.readlines()
         sim_A_prod = float(lines[0])
         sim_A_prod_err = float(lines[1])
@@ -255,14 +255,15 @@ file_path = f"{args.path}/result_of_fit.txt"
 with open(file_path, "w") as file:
   file.write(f"{result_string}")
 
-# Calculate residuals using NumPy
-
 ratio = (simulated_asymmetry / asymmetry)
-ratio_error = np.abs(ratio)*np.sqrt((asymmetry_error/asymmetry)**2 + (simulated_asymmetry_error/simulated_asymmetry)**2)
+ratio_error = np.sqrt((simulated_asymmetry_error/asymmetry)**2 + ((simulated_asymmetry*asymmetry_error)/(asymmetry)**2)**2)
+
 # Plot residuals against observed data with error bars
 for i, (x, y, xerr, yerr) in enumerate(zip(x_value, ratio, x_value_error, ratio_error)):
-    color = 'red' if (y + yerr < 1) and (y - yerr < 1) else 'black'
+    color = 'black' if (y + yerr < 1) and (y - yerr < 1) else 'black'
     ax2.errorbar(x, y, xerr=xerr, yerr=yerr, fmt='o', color=color)
+
+# ax2.errorbar(x_value, ratio, xerr=x_value, yerr=ratio_error, fmt='o', color='black')
 
 ax2.axhline(y=1, color='grey', linestyle='--') 
 # ax2.axhline(y=0, color='grey', linestyle='--')  
@@ -272,7 +273,7 @@ if args.scheme == 'pT':
     ax2.set_xlabel(r'$p_{T}$ [GeV$c^{-1}$]', fontsize = 50)
 elif args.scheme == 'eta':
     ax2.set_xlabel(r'$\eta$', fontsize = 50)
-ax2.set_ylabel(r'Pull [${\sigma}$]', fontsize = 50)
+ax2.set_ylabel(r'Ratio [Pythia/asymmetry]', fontsize = 50)
 
 
 

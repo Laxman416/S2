@@ -42,13 +42,16 @@ fi
 # done
 # echo "Finished simulation"
 
-python Pythia/pythia_hadronisation/combining_csv.py --path '/afs/cern.ch/work/l/lseelan/Semester2' --max_file $seeding
+# python Pythia/pythia_hadronisation/combining_csv.py --path '/afs/cern.ch/work/l/lseelan/Semester2' --max_file $seeding
 
 echo
 echo "Created a csv file with all the data"
 echo
 
-# python Pythia/pythia_hadronisation/multiple_candidates_pythia.py --input "Pythia/Pythia_Data"  --path "Pythia/Pythia_Data"
+for integer in 30 60 85
+do
+  python Pythia/pythia_hadronisation/multiple_candidates_pythia.py --input "Pythia/Pythia_Data/combined_simulated_data_"$integer".csv"  --path "Pythia/Pythia_Data" --file_suffix $integer
+done
 
 echo
 echo "The phase space selection criteria has been applied and multiple candidates have been removed from the simulation data"
@@ -56,19 +59,19 @@ echo
 
 # python Pythia/pythia_hadronisation/create_binning_scheme_pythia.py --path "Pythia/Pythia_Data/binned_data/binning_scheme" --input "Pythia/Pythia_Data"
 
-# for meson in D0 D0bar
-# do 
-#   python Pythia/pythia_hadronisation/apply_binning_scheme_pythia.py --year $year --size $size --meson $meson --path $directory"/Pythia/binned_data" --input "Pythia/Pythia_Data" --bin_path $directory"/binned_data/binning_scheme"
-# done
+for meson in D0 D0bar
+do 
+  python Pythia/pythia_hadronisation/apply_binning_scheme_pythia.py --year $year --size $size --meson $meson --path $directory"/Pythia/binned_data" --input "Pythia/Pythia_Data" --bin_path $directory"/binned_data/binning_scheme"
+done
 
 echo
 echo "The simulation data has been binned"
 echo
 
-# for scheme in local pT eta
-# do
-#     python Pythia/pythia_hadronisation/Aprod_pythia.py --path $directory"/Pythia/asymmetry/$scheme" --input_bins $directory"/Pythia/binned_data/$scheme" --scheme $scheme --results_path $directory"/Pythia/results" --input_global "Pythia/Pythia_Data" --year $year --size $size 
-# done
+for scheme in eta pT local
+do
+    python Pythia/pythia_hadronisation/Aprod_pythia.py --path $directory"/Pythia/asymmetry/$scheme" --input_bins $directory"/Pythia/binned_data/binning_scheme" --scheme $scheme --results_path $directory"/Pythia/results" --input_global "Pythia/Pythia_Data"
+done
 
 echo "The global and local production asymmetries have been calculated"
 echo
