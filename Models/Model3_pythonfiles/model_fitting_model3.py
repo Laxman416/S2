@@ -175,8 +175,8 @@ def generate_list(size_value_local):
 
 options = parse_arguments()
 numbins = 300
-lower_boundary = 1815
-upper_boundary = 1910
+lower_boundary = 1805
+upper_boundary = 1920
 meson = options.meson
 polarity = options.polarity
 polarity = polarity[0].upper() + polarity[1:]
@@ -222,7 +222,7 @@ with open(f"{options.parameters_path}/fit_parameters.txt", 'r') as file:
         parameters_dict[name] = float(value)
 ttree.SetBranchStatus("*", 0)
 ttree.SetBranchStatus("D0_MM", 1)
-D0_M = RooRealVar("D0_MM", f"D0 mass / [MeVc^{-2}]", 1815, 1910) # Data - invariant mass
+D0_M = RooRealVar("D0_MM", f"D0 mass / [MeVc^{-2}]", 1805, 1920) # Data - invariant mass
 #print(parameters_dict)
  #Model 1
 # Define variables for signal model, using the best fit parameters generated from fit_global.py

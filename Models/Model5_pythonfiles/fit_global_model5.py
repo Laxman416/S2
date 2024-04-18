@@ -217,53 +217,52 @@ if isinstance(size_value, int):
 
 D0_M = ROOT.RooRealVar("D0_MM", "D0 mass / [MeV/c*c]", 1815, 1910)
 
-# Johnson SU Distribution
-Jmu = RooRealVar("Jmu", "Jmu", 1.8665e+03, 1860, 1870)
-Jlam = RooRealVar("Jlam", "Jlam", 1.7441e+01, 10, 20)
-Jgam = RooRealVar("Jgam", "Jgam", 2.6381e-01, 0, 10)
-Jdel = RooRealVar("Jdel", "Jdel", 1.6214e+00, 0, 10)
-Johnson = RooJohnson("Johnson","Johnson", D0_M, Jmu, Jlam, Jgam, Jdel)
-
-# Bifurcated Gaussian
-bifurmean = RooRealVar("bifurmean", "bifurmean", 1.8652e+03, 1860, 1870)
-sigmaL =  RooRealVar("sigmaL", "sigmaL", 7.9016e+00, 0, 10)
-sigmaR = RooRealVar("sigmaR", "sigmaR", 6.1889e+00, 0, 10)
-bifurgauss = RooBifurGauss("Bifurgauss1", "Bifurgauss1", D0_M, bifurmean, sigmaL, sigmaR)
-
-# Bifurcated Gaussian 
-bifurmean2 = RooRealVar("bifurmean2", "bifurmean2", 1.8657e+03, 1860, 1870)
-sigmaL2 =  RooRealVar("sigmaL2", "sigmaL2", 5.9369e+00, 0, 10)
-sigmaR2 = RooRealVar("sigmaR2", "sigmaR2", 8.5516e+00, 0, 10)
-bifurgauss2 = RooBifurGauss("Bifurgaussian2", "Bifurgaussian2", D0_M, bifurmean2, sigmaL2, sigmaR2)
-
 # Gaussian
-mean = RooRealVar("mean", "mean", 1865, 1860, 1870)
-sigma = RooRealVar("sigma", "sigma", 7.37, 0, 20)
+mean = RooRealVar("mean", "mean", 1865.07)
+sigma = RooRealVar("sigma", "sigma", 7.3)
 gauss = RooGaussian("Gaussian", "Gaussian", D0_M, mean, sigma)
 
+# Gaussian
+sigma2 = RooRealVar("sigma2", "sigma2", 1.8, 0, 2)
+gauss2 = RooGaussian("Gaussian2", "Gaussian2", D0_M, mean, sigma2)
+
+#Crystal Ball parameters
+Cmu = RooRealVar("Cmu", "Cmu", 1865.07, 1855, 1875)
+Csig = RooRealVar("Csig", "Csig", 9.65, 0, 10)
+# 2 sigmas
+aL = RooRealVar("aL", "aL", 1.1)
+nL = RooRealVar("nL", "nL", 50)
+aR = RooRealVar("aR", "aR", 2, 1.5, 5)
+nR = RooRealVar("nR", "nR", 13)
+Crystal = RooCrystalBall("Crystal", "Crystal Ball", D0_M, Cmu, Csig, aL, nL, aR, nR)
+
+# #Bifurgauss
+# sigmaL =  RooRealVar("sigmaL", "sigmaL", 7.9016e+00, 0, 10)
+# sigmaR = RooRealVar("sigmaR", "sigmaR", 6.1889e+00, 0, 10)
+# bifurgauss = RooBifurGauss("Bifurgauss1", "Bifurgauss1", D0_M, mean, sigmaL, sigmaR)
 # Model Exponential Background
-a0 = RooRealVar("a0", "a0", -0.0092, -0.0097, -0.0090)
+a0 = RooRealVar("a0", "a0", -0.0096)
 background = RooExponential("exponential", "exponential", D0_M, a0)
 
 # Ratio of signal intensities between each model. For N PDFs need N-1 fractions 
 # DO MagUp
-frac_D0_up = RooRealVar("frac_D0_up", "frac_D0_up", 0.16, 0, 1)
-frac_D0_up_2 = RooRealVar("frac_D0_up_2", "frac_D0_up_2", 0.3, 0, 1)
-frac_D0_up_3 = RooRealVar("frac_D0_up_3", "frac_D0_up_3", 0.4, 0, 1)
+frac_D0_up = RooRealVar("frac_D0_up", "frac_D0_up", 0.2, 0, 1)
+frac_D0_up_2 = RooRealVar("frac_D0_up_2", "frac_D0_up_2", 0.4, 0.3, 1)
+# frac_D0_up_3 = RooRealVar("frac_D0_up_3", "frac_D0_up_3", 0.25, 0, 0.3)
 
 # D0 MagDown
-frac_D0_down = RooRealVar("frac_D0_down", "frac_D0_down", 1.9075e-01, 0, 1)
-frac_D0_down_2 = RooRealVar("frac_D0_down_2", "frac_D0_down_2", 2.2488e-01, 0, 1)
-frac_D0_down_3 = RooRealVar("frac_D0_down_3", "frac_D0_down_3", 3.0413e-01, 0, 1)
+frac_D0_down = RooRealVar("frac_D0_down", "frac_D0_down", 2.0e-01, 0, 1)
+frac_D0_down_2 = RooRealVar("frac_D0_down_2", "frac_D0_down_2", 4.0488e-01, 0.3, 1)
+# frac_D0_down_3 = RooRealVar("frac_D0_down_3", "frac_D0_down_3", 2.5413e-01, 0, 0.3)
 # D0bar MagUp2
-frac_D0bar_up = RooRealVar("frac_D0bar_up", "frac_D0bar_up", 0.16, 0, 1)
-frac_D0bar_up_2 = RooRealVar("frac_D0bar_up_2", "frac_D0bar_up_2", 0.3, 0, 1)
-frac_D0bar_up_3 = RooRealVar("frac_D0bar_up_3", "frac_D0bar_up_3", 0.4, 0, 1)
+frac_D0bar_up = RooRealVar("frac_D0bar_up", "frac_D0bar_up", 0.2, 0.1, 1)
+frac_D0bar_up_2 = RooRealVar("frac_D0bar_up_2", "frac_D0bar_up_2", 0.4, 0.3, 1)
+# frac_D0bar_up_3 = RooRealVar("frac_D0bar_up_3", "frac_D0bar_up_3", 0.25, 0.1, 0.3)
 
 # D0bar MagDown
-frac_D0bar_down = RooRealVar("frac_D0bar_down", "frac_D0bar_down", 0.16, 0, 1)
-frac_D0bar_down_2 = RooRealVar("frac_D0bar_down_2", "frac_D0bar_down_2", 0.36, 0, 1)
-frac_D0bar_down_3 = RooRealVar("frac_D0bar_down_3", "frac_D0bar_down_3", 0.40, 0, 1)
+frac_D0bar_down = RooRealVar("frac_D0bar_down", "frac_D0bar_down", 0.2, 0.1, 1)
+frac_D0bar_down_2 = RooRealVar("frac_D0bar_down_2", "frac_D0bar_down_2", 0.4, 0.3, 1)
+# frac_D0bar_down_3 = RooRealVar("frac_D0bar_down_3", "frac_D0bar_down_3", 0.25, 0.1, 0.3)
 
 # Generate normalisation variables
 Nsig_D0_up = ROOT.RooRealVar("Nsig_D0_up", "Nsig_D0_up", 0.95*ttree_D0_up.GetEntries(), 0, ttree_D0_up.GetEntries())
@@ -274,7 +273,6 @@ Nsig_D0_down = ROOT.RooRealVar("Nsig_D0_down", "Nsig_D0_down", 0.95*ttree_D0_dow
 Nsig_D0bar_down = ROOT.RooRealVar("Nsig_D0bar_down", "Nsig_D0bar_down", 0.95*ttree_D0bar_down.GetEntries(), 0, ttree_D0bar_down.GetEntries())
 Nbkg_D0_down = ROOT.RooRealVar("Nbkg_D0_down", "Nbkg_D0_down", 0.05*ttree_D0_down.GetEntries(), 0, ttree_D0_down.GetEntries())
 Nbkg_D0bar_down = ROOT.RooRealVar("Nbkg_D0bar_down", "Nbkg_D0bar_down", 0.05*ttree_D0bar_down.GetEntries(), 0, ttree_D0bar_down.GetEntries())
-
 
 if binned:
     # Creating the histograms for both polarities for D0 and D0bar by converting the TTree D0_MM data inside the TChain to a TH1(base class of ROOT histograms)
@@ -305,28 +303,28 @@ if binned:
 
     # Model Signal for D0 MagUp
     binned_sample.defineType("Binned_D0_up_sample")
-    signal_D0_up = RooAddPdf("signal_D0_up", "signal D0 up", RooArgList(Johnson, bifurgauss, bifurgauss2, gauss), RooArgList(frac_D0_up, frac_D0_up_2, frac_D0_up_3))
+    signal_D0_up = RooAddPdf("signal_D0_up", "signal D0 up", RooArgList(gauss, gauss2, Crystal), RooArgList(frac_D0_up, frac_D0_up_2))
+
     # Generate model for D0 MagUp
     model_D0_up = RooAddPdf("model_D0_up", "model D0 up", [signal_D0_up, background], [Nsig_D0_up, Nbkg_D0_up])
     simultaneous_pdf.addPdf(model_D0_up, "Binned_D0_up_sample")
     
     # Model Signal for D0 MagDown
     binned_sample.defineType("Binned_D0_down_sample")
-    signal_D0_down = RooAddPdf("signal_D0_down", "signal D0 down", RooArgList(Johnson, bifurgauss, bifurgauss2, gauss), RooArgList(frac_D0_down, frac_D0_down_2, frac_D0_down_3))
+    signal_D0_down = RooAddPdf("signal_D0_down", "signal D0 down", RooArgList(gauss, gauss2, Crystal), RooArgList(frac_D0_down, frac_D0_down_2))
     # Generate model for D0 MagDown
     model_D0_down = RooAddPdf("model_D0_down", "model D0 down", [signal_D0_down, background], [Nsig_D0_down, Nbkg_D0_down])
     simultaneous_pdf.addPdf(model_D0_down, "Binned_D0_down_sample")
 
     # Model Signal for D0bar MagUp
     binned_sample.defineType("Binned_D0bar_up_sample")
-    signal_D0bar_up = RooAddPdf("signal_D0bar_up", "signal D0bar up", RooArgList(Johnson, bifurgauss, bifurgauss2, gauss), RooArgList(frac_D0bar_up, frac_D0bar_up_2, frac_D0bar_up_3))
-    # Generate model for D0bar MagUp
+    signal_D0bar_up = RooAddPdf("signal_D0bar_up", "signal D0bar up", RooArgList(gauss, gauss2, Crystal), RooArgList(frac_D0bar_up, frac_D0bar_up_2))
     model_D0bar_up = RooAddPdf("model_D0bar_up", "model D0bar up", [signal_D0bar_up, background], [Nsig_D0bar_up, Nbkg_D0bar_up])
     simultaneous_pdf.addPdf(model_D0bar_up, "Binned_D0bar_up_sample")
 
     # Model Signal for D0bar MagDown
     binned_sample.defineType("Binned_D0bar_down_sample")
-    signal_D0bar_down = RooAddPdf("signal_D0bar_down", "signal D0bar down", RooArgList(Johnson, bifurgauss, bifurgauss2, gauss), RooArgList(frac_D0bar_down, frac_D0bar_down_2, frac_D0bar_down_3))
+    signal_D0bar_down = RooAddPdf("signal_D0bar_down", "signal D0bar down", RooArgList(gauss, gauss2, Crystal), RooArgList(frac_D0bar_down, frac_D0bar_down_2))
     # Generate model for D0bar MagDown
     model_D0bar_down = RooAddPdf("model_D0bar_down", "model D0bar down", [signal_D0bar_down, background], [Nsig_D0bar_down, Nbkg_D0bar_down])
     simultaneous_pdf.addPdf(model_D0bar_down, "Binned_D0bar_down_sample")
@@ -349,7 +347,18 @@ fitResult.Print()
 
 
 # # List of variable names
-variables = [a0, frac_D0_down, frac_D0_up, frac_D0bar_down, frac_D0bar_up, Nsig_D0_down, Nbkg_D0_down, Nsig_D0_up, Nbkg_D0_up, Nsig_D0bar_down, Nbkg_D0bar_down, Nsig_D0bar_up, Nbkg_D0bar_up, sigmaL, sigmaR, sigmaL2, sigmaR2, frac_D0_down_2, frac_D0_up_2, frac_D0bar_down_2, frac_D0bar_up_2, Jmu, Jlam, Jgam, Jdel, mean, sigma, frac_D0_down_3, frac_D0_up_3, frac_D0bar_down_3, frac_D0bar_up_3, bifurmean2, bifurmean]
+variables = [
+    mean, sigma, 
+    sigma2,
+    Cmu, Csig, aL, nL, aR, nR,
+    a0,
+    # sigmaL, sigmaR, 
+    frac_D0_up, frac_D0_down, frac_D0bar_up, frac_D0bar_down,
+    frac_D0_up_2, frac_D0_down_2,  frac_D0bar_up_2, frac_D0bar_down_2,
+    # frac_D0_up_3, frac_D0_down_3,  frac_D0bar_up_3, frac_D0bar_down_3,  
+    Nsig_D0_down, Nsig_D0bar_down, Nsig_D0_up, Nsig_D0bar_up,
+    Nbkg_D0_down, Nbkg_D0bar_down, Nbkg_D0_up, Nbkg_D0bar_up,
+]
 values = [var.getValV() for var in variables]
 errors = [var.getError() for var in variables]
 names = [var.GetName() for var in variables]
@@ -364,5 +373,5 @@ with open(f"{args.path}/fit_parameters.txt", 'w') as file:
     for name, error in zip(names, errors):
         if name.startswith("Nsig_"):
             file.write(f"{name}_error: {error}\n")
-            
+
 print("My program took", time.time() - start_time, "to run")

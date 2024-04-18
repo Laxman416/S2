@@ -148,8 +148,8 @@ def generate_list(size_value_local):
 args = parse_arguments()
 # Bin Parameters
 numbins = 300
-lower_boundary = 1815
-upper_boundary = 1910
+lower_boundary = 1805
+upper_boundary = 1920
 
 if args.binned_fit=="y" or args.binned_fit=="Y":
     binned = True
@@ -215,7 +215,7 @@ if isinstance(size_value, int):
           ttree_D0bar_down.SetBranchStatus("D0_MM", 1)
 
 
-D0_M = ROOT.RooRealVar("D0_MM", "D0 mass / [MeV/c*c]", 1815, 1910)
+D0_M = ROOT.RooRealVar("D0_MM", "D0 mass / [MeV/c*c]", 1805, 1920)
 
 # Johnson SU Distribution
 Jmu = RooRealVar("Jmu", "Jmu", 1.8665e+03, 1860, 1870)
@@ -242,7 +242,7 @@ sigma = RooRealVar("sigma", "sigma", 7.37, 0, 20)
 gauss = RooGaussian("Gaussian", "Gaussian", D0_M, mean, sigma)
 
 # Model Exponential Background
-a0 = RooRealVar("a0", "a0", -0.0092, -0.0097, -0.0090)
+a0 = RooRealVar("a0", "a0", -0.0092, -0.0097, -0.0080)
 background = RooExponential("exponential", "exponential", D0_M, a0)
 
 # Ratio of signal intensities between each model. For N PDFs need N-1 fractions 
@@ -366,3 +366,12 @@ with open(f"{args.path}/fit_parameters.txt", 'w') as file:
             file.write(f"{name}_error: {error}\n")
             
 print("My program took", time.time() - start_time, "to run")
+print("size:", args.size)
+print("Number of entries in ttree_D0_Down", ttree_D0_down.GetEntries())
+print("Number of entries in ttree_D0bar_down", ttree_D0bar_down.GetEntries())
+print("Number of entries in ttree_D0_up", ttree_D0_up.GetEntries())
+print("Number of entries in ttree_D0_up", ttree_D0bar_up.GetEntries())
+print("Signal Yield in ttree_D0_Down", Nsig_D0_down.getValV())
+print("Signal Yield in ttree_D0bar_down", Nsig_D0bar_down.getValV())
+print("Signal Yield in ttree_D0_up", Nsig_D0_up.getValV())
+print("Signal Yield in ttree_D0bar_up", Nsig_D0bar_up.getValV())

@@ -156,7 +156,7 @@ with open(file_path, 'r') as file:
     # Read all lines from the file and store them in a list
     bin_lines = [float(line.strip()) for line in file.readlines()]
 
-print(bin_lines)
+# print('Bin Lines: ',bin_lines)
 for i in range(0,10):
     # Get center of bin and width of bin as error
     x_value_indivual = (bin_lines[i]+bin_lines[i+1])/2
@@ -251,12 +251,13 @@ if args.scheme == 'pT':
 elif args.scheme == 'eta':
     ax1.legend([(line1,fill1),(line2,fill2),Data, extra],[r'Average result over $\eta$ bins', r'Bin integrated result','Data','Pythia'])#,='upper right')
 
+
 file_path = f"{args.path}/result_of_fit.txt"
 with open(file_path, "w") as file:
   file.write(f"{result_string}")
 
 ratio = (simulated_asymmetry / asymmetry)
-ratio_error = np.sqrt((simulated_asymmetry_error/asymmetry)**2 + ((simulated_asymmetry*asymmetry_error)/(asymmetry)**2)**2)
+ratio_error = np.abs(ratio)*np.sqrt((asymmetry_error/asymmetry)**2 + (simulated_asymmetry_error/simulated_asymmetry)**2)
 
 # Plot residuals against observed data with error bars
 for i, (x, y, xerr, yerr) in enumerate(zip(x_value, ratio, x_value_error, ratio_error)):
@@ -269,12 +270,14 @@ ax2.axhline(y=1, color='grey', linestyle='--')
 # ax2.axhline(y=0, color='grey', linestyle='--')  
 # ax2.axhline(y=-3, color='red', linestyle='--')  
 
+
+
+# Now you can use these labels in your y-axis label
 if args.scheme == 'pT':
     ax2.set_xlabel(r'$p_{T}$ [GeV$c^{-1}$]', fontsize = 50)
 elif args.scheme == 'eta':
     ax2.set_xlabel(r'$\eta$', fontsize = 50)
-ax2.set_ylabel(r'Ratio [Pythia/asymmetry]', fontsize = 50)
-
+ax2.set_ylabel(r'Ratio', fontsize = 50)
 
 
 if args.scheme == 'pT':
