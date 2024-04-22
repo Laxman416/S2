@@ -62,22 +62,22 @@ echo
 
 # ############ Model 3
 # python Model3_pythonfiles/fit_global_model3.py  --year $year --size $size --path $directory"/model_fitting/global" --binned_fit $binned --input "/eos/lhcb/user/l/lseelan/Total/selected_data" --scheme "total"
-# for meson in D0 #D0bar
+# for meson in D0 D0bar
 # do
-#     for polarity in down # up
+#     for polarity in down up
 #     do 
 #             python Model3_pythonfiles/model_fitting_model3.py --year $year --size $size --polarity $polarity --meson $meson --path $directory"/model_fitting/global" --input "/eos/lhcb/user/l/lseelan/Total/selected_data" --parameters_path $directory"/model_fitting/global" --scheme 'total' --binned_fit $binned
 #     done
 # done
 
-# echo "Plotted graphs"
+echo "Plotted graphs"
 
 
 # ############ Model 4
 python Model4_pythonfiles/fit_global_model4.py  --year $year --size $size --path $directory"/model_fitting/global" --binned_fit $binned --input "/eos/lhcb/user/l/lseelan/Total/selected_data" --scheme "total"
-for meson in D0 #D0bar
+for meson in D0 D0bar
 do
-    for polarity in down #up
+    for polarity in down up
     do 
             python Model4_pythonfiles/model_fitting_model4.py --year $year --size $size --polarity $polarity --meson $meson --path $directory"/model_fitting/global" --input "/eos/lhcb/user/l/lseelan/Total/selected_data" --parameters_path $directory"/model_fitting/global" --scheme 'total' --binned_fit $binned
     done
