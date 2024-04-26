@@ -9,7 +9,9 @@
     int year = 18; // Change this to the desired year
     char polarity[] = "down"; // Change this to the desired polarity ("up" or "down")
     char meson[] = "D0bar";
-    char kinematic[] = "pT";
+    char kinematic[] = "eta";
+
+
     // Check specific file if flag is not set
     if (checkAllFiles == 0) {
         // Open ROOT and create a TChain
@@ -32,7 +34,7 @@
         int i;
         char filepath[256];
         // for (i = 0; i < 100; ++i) 
-        for (i = 10; i <= 100; i += 10) 
+        for (i = 10; i < 100; i += 10) 
         {
             char file_index[3];
             if (i < 10)
@@ -40,8 +42,8 @@
             else
                 sprintf(file_index, "%d", i);
 
-            // sprintf(filepath, "/eos/lhcb/user/l/lseelan/Total/binned_data/16/pT/both/down_16_70_bin%s.root", file_index);
-            sprintf(filepath, "/eos/lhcb/user/l/lseelan/Total/selected_data/2016/down/D0/D0_down_data_16_%s_clean.root", file_index);
+            sprintf(filepath, "/eos/lhcb/user/l/lseelan/Total/binned_data/16/local/both/down_16_70_bin%s.root", file_index);
+            // sprintf(filepath, "/eos/lhcb/user/l/lseelan/Total/selected_data/2016/down/D0/D0_down_data_16_%s_clean.root", file_index);
 
 
             // Open ROOT and create a TChain

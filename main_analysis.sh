@@ -14,6 +14,6 @@ python plot_pT_eta.py --year $year --size $size --bin_path $directory"/binned_da
 echo
 echo "ploted pT"
 echo
-python plot_pT_eta.py --year $year --size $size --bin_path $directory"/binned_data/binning_scheme" --asymm_path $directory"/asymmetry/eta" --path $directory"/results" --scheme 'eta' --sim_asymm_path $directory"/Pythia/asymmetry/eta"
+# python plot_pT_eta.py --year $year --size $size --bin_path $directory"/binned_data/binning_scheme" --asymm_path $directory"/asymmetry/eta" --path $directory"/results" --scheme 'eta' --sim_asymm_path $directory"/Pythia/asymmetry/eta"
 
 echo "pT and eta plotted graph"

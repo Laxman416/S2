@@ -357,6 +357,14 @@ if binned:
             #     error = D0_Hist.GetBinError(bin)
             #     D0_Hist.SetBinError(bin, 10 * error)
 
+        error_bin_list = []
+        y_value_bin_list = []
+        for bin in range(1, D0_Hist.GetNbinsX() + 1):
+            error = D0_Hist.GetBinError(bin)
+            y_value = D0_Hist.GetBinContent(bin)
+            error_bin_list.append(error)
+            y_value_bin_list.append(y_value)
+
         frame.addTH1(D0_Hist, "pe")
         legend_entries[D0_Hist.GetName()] = {"title": D0_Hist.GetTitle(), "style": "pe"}
 
@@ -593,6 +601,10 @@ if binned:
             file.close()
         else:
             c.SaveAs(f"{options.path}/{options.meson}_{options.polarity}_{options.year}_{options.size}_fit_ANA.pdf")
+            file_error = open(f"{options.path}/error_bin_list_{options.meson}_{options.polarity}_{options.year}_{options.size}_bin{options.bin}.txt", "w+")
+            for i in range(len(error_bin_list)):
+                file_error.write(f"Bin {i+1}: Error = {error_bin_list[i]}, Y_value = {y_value_bin_list[i]}\n")
+            file_error.close()
             if Failed == 0:
                 pull_canvas.SaveAs(f"{options.path}/{options.meson}_{options.polarity}_{options.year}_{options.size}_fit_pulls.pdf")
             file = open(f"{options.path}/yields_{options.meson}_{options.polarity}_{options.year}_{options.size}.txt", "w+")

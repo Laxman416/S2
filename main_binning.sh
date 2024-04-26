@@ -17,9 +17,9 @@ mkdir /eos/lhcb/user/l/lseelan/Total/binned_data/$year/eta/both
 
 # python create_binning_scheme.py --year $year --size $size --path $directory"/binned_data/binning_scheme" --input "/eos/lhcb/user/l/lseelan/Total/selected_data"
 
-for meson in D0bar D0
+for meson in D0bar #D0
 do 
-    for polar in down up
+    for polar in up #down
     do    
         python apply_binning_scheme.py --year $year --size $size --meson $meson --polarity $polar --path "/eos/lhcb/user/l/lseelan/Total/binned_data/"$year --input "/eos/lhcb/user/l/lseelan/Total/selected_data" --bin_path $directory"/binned_data/binning_scheme"
         # python plot_phase_space.py --year $year --size $size --meson $meson --polarity $polar --path $directory"/binned_data/binning_scheme" --input "/eos/lhcb/user/l/lseelan/Total/selected_data" --bin_path $directory"/binned_data/binning_scheme"
@@ -31,10 +31,10 @@ echo "The data has been binned"
 echo
 
 echo "Applying binning scheme independent of meson flavour, needed for Adet"
-for polar in up down
-do    
-    python apply_binning_scheme.py --year $year --size $size --meson 'both' --polarity $polar --path "/eos/lhcb/user/l/lseelan/Total/binned_data/"$year --input "/eos/lhcb/user/l/lseelan/Total/selected_data" --bin_path $directory"/binned_data/binning_scheme"
-done
+# for polar in up down
+# do    
+#     python apply_binning_scheme.py --year $year --size $size --meson 'both' --polarity $polar --path "/eos/lhcb/user/l/lseelan/Total/binned_data/"$year --input "/eos/lhcb/user/l/lseelan/Total/selected_data" --bin_path $directory"/binned_data/binning_scheme"
+# done
 
 echo "The data has been binned, Adet"
 
